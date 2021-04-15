@@ -1,6 +1,6 @@
-from javascript_compiler.token import *
-from javascript_compiler.node import *
-from javascript_compiler.error import *
+from .token import *
+from .node import *
+from .error import *
 
 class ParseResult:
     def __init__ (self):

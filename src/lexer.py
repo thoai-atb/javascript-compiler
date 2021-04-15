@@ -1,7 +1,7 @@
-from javascript_compiler.position import * 
-from javascript_compiler.constant import *
-from javascript_compiler.token import *
-from javascript_compiler.error import *
+from .position import * 
+from .constant import *
+from .token import *
+from .error import *
 
 class Lexer:
     def __init__ (self, file_name, text):

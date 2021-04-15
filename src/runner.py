@@ -1,8 +1,8 @@
-from javascript_compiler.lexer import *
-from javascript_compiler.parser import *
-from javascript_compiler.interpreter import *
-from javascript_compiler.symbol_table import *
-from javascript_compiler.context import *
+from .lexer import *
+from .parser import *
+from .interpreter import *
+from .symbol_table import *
+from .context import *
 import math
 
 ############################################################### RUN

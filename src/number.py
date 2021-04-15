@@ -1,4 +1,4 @@
-from javascript_compiler.error import *
+from .error import *
 
 class Number:
     def __init__ (self, value):

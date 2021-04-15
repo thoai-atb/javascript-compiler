@@ -1,5 +1,5 @@
-from javascript_compiler.number import *
-from javascript_compiler.token import *
+from .number import *
+from .token import *
 
 class RTResult:
     def __init__ (self):

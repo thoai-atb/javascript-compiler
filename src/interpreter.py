@@ -51,7 +51,7 @@ class Interpreter:
     def visit_VarAssignNode(self, node, context):
         res = RTResult()
         var_name = node.var_token.value
-        value = res.register(self.visit(node.expr_token, context))
+        value = res.register(self.visit(node.expr_node, context))
         if res.error: return res
         context.symbol_table.set(var_name, value)
         return res.success(value)

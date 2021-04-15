@@ -27,3 +27,11 @@ changed:
     and -> &&
     or -> ||
     not -> !
+
+/////////////////////// IN PPTREE:
+
+Fix order by changing to this:
+    a = children(current_node)
+    b = []
+    while a and sum(size_branch[node] for node in b) < sum(size_branch[node] for node in a):
+        b.insert(0, a.pop())

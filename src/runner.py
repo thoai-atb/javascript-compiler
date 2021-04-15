@@ -3,6 +3,7 @@ from .parser import *
 from .interpreter import *
 from .symbol_table import *
 from .context import *
+from .node_printer import *
 import math
 
 ############################################################### RUN
@@ -28,7 +29,8 @@ def run(file_name, text):
     if ast.error:
         return None, ast.error
     print('result of parser: ')
-    print(ast.node)
+    printer = NodePrinter(ast.node)
+    printer.print()
 
     # INTERPRETATION
     interpreter = Interpreter()

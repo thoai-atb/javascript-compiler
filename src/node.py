@@ -17,14 +17,14 @@ class VarAccessNode:
         return f'{self.token}'
 
 class VarAssignNode:
-    def __init__ (self, var_token, expr_token):
+    def __init__ (self, var_token, expr_node):
         self.var_token = var_token
-        self.expr_token = expr_token
+        self.expr_node = expr_node
         self.pos_start = var_token.pos_start
-        self.pos_end = expr_token.pos_end
+        self.pos_end = expr_node.pos_end
     
     def __repr__ (self):
-        return f'{self.var_token} = ({self.expr_token})'
+        return f'{self.var_token} = ({self.expr_node})'
 
 class BinOpNode:
     def __init__ (self, left_node, token, right_node):

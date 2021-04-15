@@ -35,9 +35,14 @@ class NodePrinter:
         Node(str(node.token), print_node)
         p_node = Node(self.get_name(node.node), print_node)
         self.construct(node.node, p_node)
+    
+    def construct_StatementListNode(self, node, print_node):
+        for n in node.list:
+            p_node = Node(self.get_name(n), print_node)
+            self.construct(n, p_node)
 
     def no_construct_method(self, node, print_node):
         raise Exception(f'No construct_{type(node).__name__} method defined')
 
     def print(self):
-        print_tree(self.print_node, horizontal=False)
+        print_tree(self.print_node, horizontal=True)

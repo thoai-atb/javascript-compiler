@@ -35,10 +35,10 @@ class Parser:
     ####################################
 
     def parse(self):
-        res = self.expr()
+        res = self.stmt_list()
         if not res.error and self.current_token.type != TT_EOF:
             return res.failure(InvalidSyntaxError(
-                self.current_token.pos_start, self.current_token.pos_end, "Expected an operation"
+                self.current_token.pos_start, self.current_token.pos_end, "Cannot reach EOF token"
             ))
         return res
 
@@ -73,7 +73,7 @@ class Parser:
                 self.current_token.pos_start, self.current_token.pos_end, "Expected ')'"
             ))
         return res.failure(InvalidSyntaxError(
-            token.pos_start, token.pos_end, "Expected int or float"
+            token.pos_start, token.pos_end, f"Expected int or float, but found {token.type}"
         ))
 
     def factor(self):
@@ -120,6 +120,31 @@ class Parser:
         node = res.register(self.bin_op(self.comp_expr, (TT_AND, TT_OR)))
         if res.error: return res
         return res.success(node)
+
+    ############################
+
+    def stmt_list(self):
+        res = ParseResult()
+        stmts = []
+        while self.current_token.type != TT_EOF:
+            if self.current_token.type == TT_EOL:
+                self.advance()
+                continue
+            stmts.append(res.register(self.stmt()))
+            if res.error: return res
+            if self.current_token.type == TT_EOL:
+                self.advance()
+                continue
+            if self.current_token.type == TT_EOF:
+                continue
+            return res.failure(InvalidSyntaxError(self.current_token.pos_start, self.current_token.pos_end, "Expected new line"))
+        return res.success(StatementListNode(stmts))
+        
+    def stmt(self):
+        return self.expr()
+    
+    
+    ############################
 
     def bin_op(self, func, ops):
         res = ParseResult()

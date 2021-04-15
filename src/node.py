@@ -46,3 +46,10 @@ class UnaryOpNode:
     
     def __repr__ (self):
         return f'({self.token}, {self.node})'
+
+class StatementListNode:
+    def __init__ (self, node_list):
+        self.list = node_list
+    
+    def __repr__ (self):
+        return self.list

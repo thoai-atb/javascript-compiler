@@ -1,11 +1,8 @@
-stmt-list: (stmt) *
+stmt-list: (stmt (EOL | EOF)) *
 
-stmt: expr ;
+stmt: expr
 
-
-
-
-///////////////////////////////////////////////////////////////////
+:::::::::::::::::::::::::::::::::::::::
 
 expr :  (KEYWORD: var) IDENTIFIER EQUAL expr
      :  comp-expr (TT_AND | TT_OR) comp-expr

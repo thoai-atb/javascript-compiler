@@ -63,6 +63,9 @@ class Lexer:
                 token, error = self.make_or()
                 if error: return [], error
                 tokens.append(token)
+            elif self.current_char == '\n':
+                tokens.append(Token(TT_EOL, pos_start=self.pos))
+                self.advance()
             else:
                 char = self.current_char
                 pos_start = self.pos.copy()

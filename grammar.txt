@@ -1,0 +1,14 @@
+expr :  (KEYWORD: var) IDENTIFIER EQUAL expr
+     :  comp-expr (TT_AND | TT_OR) comp-expr
+comp-expr : TT_NOT comp-expr
+          : arith-expr ((EE | NE | LT | GT | LTE | GTE) arith-expr) * 
+
+arith-expr : term ((PLUS | MINUS) term) *
+
+term : factor ((MUL | DIV) factor) *
+
+factor: atom (^ atom) *
+
+atom: (PLUS | MINUS) atom 
+        :   INT | FLOAT | IDENTIFIER
+        : LPAREN expr RPAREN

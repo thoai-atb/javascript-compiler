@@ -50,7 +50,23 @@ class Interpreter:
 
     def visit_VarAssignNode(self, node, context):
         res = RTResult()
-        var_name = node.var_token.value
+        var_name = node.var_name_token.value
+        if not context.symbol_table.has(var_name):
+            return res.failure(RTError(
+                node.var_name_token.pos_start, node.var_name_token.pos_end, f'Variable {var_name} is not defined', context
+            ))
+        value = res.register(self.visit(node.expr_node, context))
+        if res.error: return res
+        context.symbol_table.set(var_name, value)
+        return res.success(value)
+
+    def visit_VarDeclarationNode(self, node, context):
+        res = RTResult()
+        var_name = node.var_name_token.value
+        if context.symbol_table.has(var_name):
+            return res.failure(RTError(
+                node.var_name_token.pos_start, node.var_name_token.pos_end, f'Variable {var_name} is already declared', context
+            ))
         value = res.register(self.visit(node.expr_node, context))
         if res.error: return res
         context.symbol_table.set(var_name, value)

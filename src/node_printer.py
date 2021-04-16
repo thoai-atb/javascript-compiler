@@ -27,7 +27,12 @@ class NodePrinter:
         Node(str(node.token), print_node)
 
     def construct_VarAssignNode(self, node, print_node):
-        Node(str(node.var_token), print_node)
+        Node(str(node.var_name_token), print_node)
+        expr = Node(self.get_name(node.expr_node), print_node)
+        self.construct(node.expr_node, expr)
+    
+    def construct_VarDeclarationNode(self, node, print_node):
+        Node(str(node.var_name_token), print_node)
         expr = Node(self.get_name(node.expr_node), print_node)
         self.construct(node.expr_node, expr)
 

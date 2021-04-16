@@ -32,6 +32,11 @@ class Parser:
         self.current_token = self.tokens[self.token_idx] if self.token_idx < len(self.tokens) else None
         return self.current_token
 
+    def retract (self):
+        self.token_idx -= 1
+        self.current_token = self.tokens[self.token_idx] if self.token_idx < len(self.tokens) else None
+        return self.current_token
+
     ####################################
 
     def parse(self):
@@ -73,7 +78,7 @@ class Parser:
                 self.current_token.pos_start, self.current_token.pos_end, "Expected ')'"
             ))
         return res.failure(InvalidSyntaxError(
-            token.pos_start, token.pos_end, f"Expected int or float, but found {token.type}"
+            token.pos_start, token.pos_end, f"Expected int, float, unary, (expresion), but found {token.type}"
         ))
 
     def factor(self):
@@ -101,13 +106,14 @@ class Parser:
 
     def expr(self):
         res = ParseResult()
+        # DECLARATION
         if self.current_token.matches(TT_KEYWORD, 'var'):
             self.advance()
             if self.current_token.type != TT_IDENTIFIER:
                 return res.failure(InvalidSyntaxError(
                     self.current_token.pos_start, self.current_token.pos_end, "Expected identifier"
                 ))
-            identifier_name = self.current_token
+            identifier_token = self.current_token
             self.advance()
             if self.current_token.type != TT_EQUAL:
                 return res.failure(InvalidSyntaxError(
@@ -116,7 +122,19 @@ class Parser:
             self.advance()
             expr = res.register(self.expr())
             if res.error: return res
-            return res.success(VarAssignNode(identifier_name, expr))
+            return res.success(VarDeclarationNode(identifier_token, expr))
+        
+        # ASSIGNMENT
+        if self.current_token.type == TT_IDENTIFIER:
+            identifier_token = self.current_token
+            self.advance()
+            if self.current_token.type == TT_EQUAL:
+                self.advance()
+                expr = res.register(self.expr())
+                if res.error: return res
+                return res.success(VarAssignNode(identifier_token, expr))
+            self.retract()
+        
         node = res.register(self.bin_op(self.comp_expr, (TT_AND, TT_OR)))
         if res.error: return res
         return res.success(node)

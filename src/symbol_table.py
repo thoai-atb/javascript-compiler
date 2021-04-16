@@ -3,6 +3,9 @@ class SymbolTable:
         self.parent = None
         self.symbols = {}
 
+    def has(self, name):
+        return name in self.symbols
+
     def get(self, name):
         value = None
         if name in self.symbols:

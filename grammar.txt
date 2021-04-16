@@ -5,6 +5,7 @@ stmt: expr
 :::::::::::::::::::::::::::::::::::::::
 
 expr :  (KEYWORD: var) IDENTIFIER EQUAL expr
+     :  IDENTIFIER EQUAL exprs
      :  comp-expr (TT_AND | TT_OR) comp-expr
 
 comp-expr : TT_NOT comp-expr

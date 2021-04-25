@@ -20,7 +20,7 @@ def run(file_name, text):
     tokens, error = lexer.make_tokens()
     if error:
         return None, error
-    print('result of lexer: ')
+    print('\nRESULT OF LEXER: ')
     print(tokens)
 
     # PARSING
@@ -28,7 +28,7 @@ def run(file_name, text):
     ast = parser.parse()
     if ast.error:
         return None, ast.error
-    print('result of parser: ')
+    print('\nRESULT OF PARSER: ')
     printer = NodePrinter(ast.node)
     printer.print()
 

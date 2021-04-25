@@ -1,10 +1,14 @@
 stmt-list: (stmt (EOL | EOF)) *
 
+
 ::::::::::::::::::::::::::::::::::::::: TO DO
 
 stmt: if (expr) { stmt-list }
 
 ::::::::::::::::::::::::::::::::::::::: END TO DO
+
+     : expr
+
 
 expr :  (KEYWORD: var) IDENTIFIER EQUAL expr
      :  IDENTIFIER EQUAL exprs

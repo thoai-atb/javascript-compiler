@@ -51,6 +51,12 @@ class Lexer:
             elif self.current_char == ')':
                 tokens.append(Token(TT_RPAREN, pos_start=self.pos))
                 self.advance()
+            elif self.current_char == '{':
+                tokens.append(Token(TT_LCURLY, pos_start=self.pos))
+                self.advance()
+            elif self.current_char == '}':
+                tokens.append(Token(TT_RCURLY, pos_start=self.pos))
+                self.advance()
             elif self.current_char == '!':
                 token, error = self.make_not()
                 if error: return [], error

@@ -23,12 +23,16 @@ TT_NOT = 'NOT'
 
 TT_LPAREN = 'LPAREN'
 TT_RPAREN = 'RPAREN'
+TT_LCURLY = 'LCURLY'
+TT_RCURLY = 'RCURLY'
+
 
 TT_EOL = 'EOL'
 TT_EOF = 'EOF'
 
 KEYWORDS = [
-    'var'
+    'var',
+    'if'
 ]
 
 

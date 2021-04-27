@@ -2,6 +2,8 @@ THIS PROGRAM IS BASED ON THIS YOUTUBE PLAYLIST: https://www.youtube.com/playlist
 
 HERE IS THE LIST OF THINGS THAT ARE DONE DIFFERENT FROM THE TUTORIAL:
 
+HELLO WORLD 
+
 ep 2:
     don't need to wrap res.register for self.advance()
 

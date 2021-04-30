@@ -32,7 +32,8 @@ TT_EOF = 'EOF'
 
 KEYWORDS = [
     'var',
-    'if'
+    'if',
+    'else'
 ]
 
 

@@ -3,7 +3,9 @@ stmt-list: (stmt (EOL | EOF)) *
 
 ::::::::::::::::::::::::::::::::::::::: TO DO
 
-stmt: if (expr) { stmt-list }
+stmt: if (expr) stmt else stmt
+      if (expr) stmt
+      { stmt-list }
 
 ::::::::::::::::::::::::::::::::::::::: END TO DO
 

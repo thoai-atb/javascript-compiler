@@ -1,16 +1,9 @@
-stmt-list: (stmt (EOL | EOF)) *
-
-
-::::::::::::::::::::::::::::::::::::::: TO DO
+stmt-list: (EOL | EOF) * (stmt (EOL | EOF)) *
 
 stmt: if (expr) stmt else stmt
       if (expr) stmt
       { stmt-list }
-
-::::::::::::::::::::::::::::::::::::::: END TO DO
-
      : expr
-
 
 expr :  (KEYWORD: var) IDENTIFIER EQUAL expr
      :  IDENTIFIER EQUAL exprs

@@ -59,7 +59,7 @@ class Interpreter:
         if res.error: return res
         context.symbol_table.set(var_name, value)
         return res.success(value)
-
+ 
     def visit_VarDeclarationNode(self, node, context):
         res = RTResult()
         var_name = node.var_name_token.value
@@ -79,7 +79,9 @@ class Interpreter:
             value = res.register(self.visit(n, context))
             if res.error: return res
         return res.success(value)
-    
+           
+       
+       
     def visit_BinOpNode(self, node, context):
         res = RTResult()
         left = res.register(self.visit(node.left_node, context))

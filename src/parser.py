@@ -148,6 +148,8 @@ class Parser:
             if self.current_token.type == TT_EOL:
                 self.advance()
                 continue
+            if self.current_token.type == TT_RCURLY:
+                break
             stmts.append(res.register(self.stmt()))
             if res.error: return res
             if self.current_token.type == TT_EOL:
@@ -159,9 +161,60 @@ class Parser:
         return res.success(StatementListNode(stmts))
         
     def stmt(self):
-        return self.expr()
-    
-    
+        res = ParseResult()
+    ###################
+    #If (expr) stmt else stmt
+        if self.current_token.matches(TT_KEYWORD, 'if'):
+            self.advance()
+            if self.current_token.type == TT_LPAREN:
+                self.advance()
+                expr = res.register(self.expr())
+                if res.error:
+                    return res
+                if self.current_token.type == TT_RPAREN:
+                    self.advance()
+                self.checkEOLonce()
+                stmt1 = res.register(self.stmt())
+                if res.error:
+                    return res
+                if self.current_token.type == TT_EOF:
+                    return res.success(IfNode(expr, stmt1))
+                self.checkEOL()
+                if self.current_token.matches(TT_KEYWORD, 'else'):
+                    self.advance()
+                    self.checkEOLonce()
+                    stmt2 = res.register(self.stmt())
+                    if res.error:
+                        return res
+                    while self.current_token.type != TT_EOL and self.current_token.type != TT_EOF:
+                        self.retract()
+                    return res.success(IfElseNode(expr, stmt1, stmt2))
+                while self.current_token.type != TT_EOL:
+                    self.retract()
+                return res.success(IfNode(expr, stmt1))
+            return res.failure(InvalidSyntaxError(
+                self.current_token.pos_start, self.current_token.pos_end, "Expected ')'"
+            ))
+        elif self.current_token.type == TT_LCURLY:
+    ######################
+    # { stmt_list }
+            self.advance()      
+            stmt_list = res.register(self.stmt_list())
+            if self.current_token.type == TT_RCURLY:
+                self.advance()
+                self.checkEOL()
+                return res.success(stmt_list)
+            return res.failure(InvalidSyntaxError(
+                self.current_token.pos_start, self.current_token.pos_end, "Expected '}'"
+            ))             
+        else:
+    ######################
+    #Expr
+            left = res.register(self.expr())
+            if res.error:
+                return res
+            return res.success(left)
+
     ############################
 
     def bin_op(self, func, ops):
@@ -184,3 +237,9 @@ class Parser:
                 return res
             left = BinOpNode(left, op_tok, right)
         return res.success(left)
+    def checkEOL(self):
+        while self.current_token.type == TT_EOL:
+            self.advance()
+    def checkEOLonce(self):
+        if self.current_token.type == TT_EOL:
+            self.advance()

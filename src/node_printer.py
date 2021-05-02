@@ -20,6 +20,22 @@ class NodePrinter:
         self.construct(node.left_node, left)
         self.construct(node.right_node, right)
 
+    def construct_IfNode(self, node, print_node):
+        expr = Node(self.get_name(node.expr_node), print_node)
+        stmt = Node(self.get_name(node.stmt), print_node)
+        self.construct(node.expr_node, expr)
+        self.construct(node.stmt, stmt)
+        
+
+    def construct_IfElseNode(self, node, print_node):
+        expr = Node(self.get_name(node.expr_node), print_node)
+        stmt1 = Node(self.get_name(node.stmt1), print_node)
+        stmt2 = Node(self.get_name(node.stmt2), print_node)
+        self.construct(node.expr_node, expr)
+        self.construct(node.stmt1, stmt1)
+        self.construct(node.stmt2, stmt2)
+        
+
     def construct_NumberNode(self, node, print_node):
         Node(str(node.token.value), print_node)
 

@@ -65,3 +65,24 @@ class StatementListNode:
     
     def __repr__ (self):
         return self.list
+
+class IfNode:
+    def __init__(self, expr_node, stmt):
+        self.expr_node = expr_node
+        self.stmt = stmt
+        self.pos_start = expr_node.pos_start
+        
+
+    def __repr__(self):
+        return f'({self.expr_node}, {self.stmt})'  
+
+class IfElseNode:
+    def __init__(self, expr_node, stmt1, stmt2):
+        self.expr_node = expr_node
+        self.stmt1 = stmt1
+        self.stmt2 = stmt2
+        self.pos_start = expr_node.pos_start
+        
+
+    def __repr__(self):
+        return f'({self.expr_node}, {self.stmt1}, {self.stmt2})'  

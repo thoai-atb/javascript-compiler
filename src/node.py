@@ -62,6 +62,8 @@ class UnaryOpNode:
 class StatementListNode:
     def __init__ (self, node_list):
         self.list = node_list
+        self.pos_start = self.list[0].pos_start
+        self.pos_end = self.list[-1].pos_end
     
     def __repr__ (self):
         return self.list
@@ -71,6 +73,7 @@ class IfNode:
         self.expr_node = expr_node
         self.stmt = stmt
         self.pos_start = expr_node.pos_start
+        self.pos_end = stmt.pos_end
         
 
     def __repr__(self):
@@ -82,6 +85,7 @@ class IfElseNode:
         self.stmt1 = stmt1
         self.stmt2 = stmt2
         self.pos_start = expr_node.pos_start
+        self.pos_end = stmt2.pos_end
         
 
     def __repr__(self):

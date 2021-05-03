@@ -72,6 +72,28 @@ class Interpreter:
         context.symbol_table.set(var_name, value)
         return res.success(value)
 
+    def visit_IfElseNode(self, node, context):
+        res = RTResult()
+        expr_bool = res.register(self.visit(node.expr_node, context))
+        if res.error: return res
+        if expr_bool.is_true():
+            result = res.register(self.visit(node.stmt1, context))
+            if res.error: return res
+            return res.success(result)
+        result = res.register(self.visit(node.stmt2, context))
+        if res.error: return res
+        return res.success(result.set_pos(node.pos_start, node.pos_end))
+    
+    def visit_IfNode(self, node, context):
+        res = RTResult()
+        expr_bool = res.register(self.visit(node.expr_node, context))
+        if res.error: return res
+        if expr_bool.is_true():
+            result = res.register(self.visit(node.stmt, context))
+            if res.error: return res
+            return res.success(result)
+        return res.success(None)
+
     def visit_StatementListNode(self, node, context):
         res = RTResult()
         value = None
@@ -79,8 +101,6 @@ class Interpreter:
             value = res.register(self.visit(n, context))
             if res.error: return res
         return res.success(value)
-           
-       
        
     def visit_BinOpNode(self, node, context):
         res = RTResult()

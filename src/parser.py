@@ -159,7 +159,6 @@ class Parser:
     ############################
 
     def stmt_list(self):
-        print('entering stmt_list')
         res = ParseResult()
         stmts = []
         while self.current_token.type != TT_EOF:

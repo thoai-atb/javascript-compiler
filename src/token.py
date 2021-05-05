@@ -34,7 +34,8 @@ KEYWORDS = [
     'var',
     'if',
     'else',
-    'function'
+    'function',
+    'return'
 ]
 
 

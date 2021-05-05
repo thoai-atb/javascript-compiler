@@ -2,13 +2,13 @@ stmt-list:
      (EOL | EOF) * (stmt (EOL | EOF)) *
 
 stmt: 
-     if (expr) stmt else stmt
-     if (expr) stmt
-     { stmt-list }
+     KEYWORD:if LPAREN expr RPAREN stmt KEYWORD:else stmt
+     KEYWORD:if LPAREN expr RPAREN stmt
+     LCURLY stmt-list RCURLY
      expr
 
 expr
-     (KEYWORD: var) IDENTIFIER EQUAL expr
+     KEYWORD:var IDENTIFIER EQUAL expr
      IDENTIFIER EQUAL exprs
      comp-expr (TT_AND | TT_OR) comp-expr
 
@@ -25,8 +25,21 @@ term
 factor
      atom (^ atom) *
 
+################################################ TO DO
+
 atom
      (PLUS | MINUS) atom 
+     func-def
+     func-call
      INT | FLOAT | IDENTIFIER
      LPAREN expr RPAREN
+
+func-def
+     (KEYWORD: function) IDENTIFIER? LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN LCURLY stmt-list RCURLY
+
+func-call
+     IDENTIFIER LPAREN (expr (COMMA expr)*)? RPAREN
+
+################################################ END TO DO
+
 

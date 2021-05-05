@@ -69,6 +69,9 @@ class Lexer:
                 token, error = self.make_or()
                 if error: return [], error
                 tokens.append(token)
+            elif self.current_char == ',':
+                tokens.append(Token(TT_COMMA, pos_start=self.pos))
+                self.advance()
             elif self.current_char == '\n':
                 tokens.append(Token(TT_EOL, pos_start=self.pos))
                 self.advance()

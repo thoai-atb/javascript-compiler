@@ -30,7 +30,6 @@ class Parser:
 
     def update_current_token(self):
         self.current_token = self.tokens[self.token_idx] if self.token_idx < len(self.tokens) else None
-        print('=>  ', self.current_token)
         return self.current_token
     
     def advance (self):

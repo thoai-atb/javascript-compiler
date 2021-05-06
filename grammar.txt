@@ -4,6 +4,12 @@ stmt-list:
 stmt: 
      KEYWORD:if LPAREN expr RPAREN stmt KEYWORD:else stmt
      KEYWORD:if LPAREN expr RPAREN stmt
+
+     ################################## TO DO 1/2
+     KEYWORD:return expr+
+     KEYWORD:function IDENTIFIER? LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN LCURLY stmt-list RCURLY                   # function definition
+     ################################## END TO DO 1/2
+
      LCURLY stmt-list RCURLY
      expr
 
@@ -25,24 +31,13 @@ term
 factor
      atom (^ atom) *
 
-################################################ TO DO
-
 atom
      (PLUS | MINUS) atom 
-     func-call
+
+     ################################## TO DO 2/2
+     IDENTIFIER LPAREN (expr (COMMA expr)*)? RPAREN                   # function call
+     ################################## END TO DO 2/2
+
      INT | FLOAT | IDENTIFIER
      LPAREN expr RPAREN
-
-stmt 
-     func-def
-     KEYWORD:return expr+
-
-func-def
-     (KEYWORD: function) IDENTIFIER? LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN LCURLY stmt-list RCURLY
-
-func-call
-     IDENTIFIER LPAREN (expr (COMMA expr)*)? RPAREN
-
-################################################ END TO DO
-
 

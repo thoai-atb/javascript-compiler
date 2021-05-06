@@ -64,6 +64,27 @@ class Parser:
             ))
         return res
 
+    def bin_op(self, func, ops):
+        res = ParseResult()
+        left = res.register(func())
+        if res.error:
+            return res
+        while self.current_token.type != TT_EOF:
+            if not self.current_token.type in ops:
+                if not self.current_token.value: 
+                    break
+                if type(ops) == str:
+                    break
+                if not (self.current_token.type, self.current_token.value) in ops:
+                    break
+            op_tok = self.current_token
+            self.advance()
+            right = res.register(func())
+            if res.error: 
+                return res
+            left = BinOpNode(left, op_tok, right)
+        return res.success(left)
+
     def atom(self):
         res = ParseResult()
         token = self.current_token
@@ -192,27 +213,68 @@ class Parser:
 
     ############################
 
-    def stmt_list(self):
+    def func_def(self):
         res = ParseResult()
-        stmts = []
-        while self.current_token.type != TT_EOF:
-            if self.current_token.type == TT_EOL:
+        self.advance()
+
+        if self.current_token.type == TT_IDENTIFIER:
+            var_name_tok = self.current_token
+            self.advance()
+            if self.current_token.type != TT_LPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    f"Expected '('"
+                ))
+        else:
+            var_name_tok = None
+            if self.current_token.type != TT_LPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    f"Expected identifier or '('"
+                ))
+        
+        self.advance()
+        arg_name_toks = []
+
+        if self.current_token.type == TT_IDENTIFIER:
+            arg_name_toks.append(self.current_token)
+            self.advance()
+            
+            while self.current_token.type == TT_COMMA:
                 self.advance()
-                continue
-            if self.current_token.type == TT_RCURLY:
-                break
-            stmts.append(res.register(self.stmt()))
-            if res.error: 
-                return res
-            else:
-                continue
-            if self.current_token.type == TT_EOL:
+
+                if self.current_token.type != TT_IDENTIFIER:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_token.pos_start, self.current_token.pos_end,
+                        f"Expected identifier"
+                    ))
+
+                arg_name_toks.append(self.current_token)
                 self.advance()
-                continue
-            if self.current_token.type == TT_EOF:
-                continue
-            return res.failure(InvalidSyntaxError(self.current_token.pos_start, self.current_token.pos_end, "Expected new line"))
-        return res.success(StatementListNode(stmts))
+            
+            if self.current_token.type != TT_RPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.current_token.pos_start, self.current_token.pos_end,
+                    f"Expected ',' or ')'"
+                ))
+        else:
+            if self.current_token.type != TT_RPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.current_token.pos_start, self.current_token.pos_end,
+                    f"Expected identifier or ')'"
+                ))
+
+        self.advance()
+        
+        stmt = self.stmt()
+        node_to_return = res.register(stmt)
+
+        if res.error: return res
+        return res.success(FuncDefNode(
+            var_name_tok,
+            arg_name_toks,
+            node_to_return
+        ))
         
     def stmt(self):
         res = ParseResult()
@@ -280,89 +342,25 @@ class Parser:
                 return res
             return res.success(left)
 
-    ############################
-
-    def bin_op(self, func, ops):
+    def stmt_list(self):
         res = ParseResult()
-        left = res.register(func())
-        if res.error:
-            return res
+        stmts = []
         while self.current_token.type != TT_EOF:
-            if not self.current_token.type in ops:
-                if not self.current_token.value: 
-                    break
-                if type(ops) == str:
-                    break
-                if not (self.current_token.type, self.current_token.value) in ops:
-                    break
-            op_tok = self.current_token
-            self.advance()
-            right = res.register(func())
+            if self.current_token.type == TT_EOL:
+                self.advance()
+                continue
+            if self.current_token.type == TT_RCURLY:
+                break
+            stmts.append(res.register(self.stmt()))
             if res.error: 
                 return res
-            left = BinOpNode(left, op_tok, right)
-        return res.success(left)
-    
-    def func_def(self):
-        res = ParseResult()
-        self.advance()
-
-        if self.current_token.type == TT_IDENTIFIER:
-            var_name_tok = self.current_token
-            self.advance()
-            if self.current_token.type != TT_LPAREN:
-                return res.failure(InvalidSyntaxError(
-                    self.current_tok.pos_start, self.current_tok.pos_end,
-                    f"Expected '('"
-                ))
-        else:
-            var_name_tok = None
-            if self.current_token.type != TT_LPAREN:
-                return res.failure(InvalidSyntaxError(
-                    self.current_tok.pos_start, self.current_tok.pos_end,
-                    f"Expected identifier or '('"
-                ))
-        
-        self.advance()
-        arg_name_toks = []
-
-        if self.current_token.type == TT_IDENTIFIER:
-            arg_name_toks.append(self.current_token)
-            self.advance()
-            
-            while self.current_token.type == TT_COMMA:
+            else:
+                continue
+            if self.current_token.type == TT_EOL:
                 self.advance()
-
-                if self.current_token.type != TT_IDENTIFIER:
-                    return res.failure(InvalidSyntaxError(
-                        self.current_token.pos_start, self.current_token.pos_end,
-                        f"Expected identifier"
-                    ))
-
-                arg_name_toks.append(self.current_token)
-                self.advance()
-            
-            if self.current_token.type != TT_RPAREN:
-                return res.failure(InvalidSyntaxError(
-                    self.current_token.pos_start, self.current_token.pos_end,
-                    f"Expected ',' or ')'"
-                ))
-        else:
-            if self.current_token.type != TT_RPAREN:
-                return res.failure(InvalidSyntaxError(
-                    self.current_token.pos_start, self.current_token.pos_end,
-                    f"Expected identifier or ')'"
-                ))
-
-        self.advance()
-        
-        stmt = self.stmt()
-        node_to_return = res.register(stmt)
-
-        if res.error: return res
-        return res.success(FuncDefNode(
-            var_name_tok,
-            arg_name_toks,
-            node_to_return
-        ))
+                continue
+            if self.current_token.type == TT_EOF:
+                continue
+            return res.failure(InvalidSyntaxError(self.current_token.pos_start, self.current_token.pos_end, "Expected new line"))
+        return res.success(StatementListNode(stmts))
     

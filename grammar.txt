@@ -29,10 +29,13 @@ factor
 
 atom
      (PLUS | MINUS) atom 
-     func-def
      func-call
      INT | FLOAT | IDENTIFIER
      LPAREN expr RPAREN
+
+stmt 
+     func-def
+     KEYWORD:return expr+
 
 func-def
      (KEYWORD: function) IDENTIFIER? LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN LCURLY stmt-list RCURLY

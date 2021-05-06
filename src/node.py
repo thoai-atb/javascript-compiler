@@ -24,7 +24,7 @@ class VarAssignNode:
         self.pos_end = expr_node.pos_end
     
     def __repr__ (self):
-        return f'{self.var_token} = ({self.expr_node})'
+        return f'{self.var_name_token} = ({self.expr_node})'
 
 class VarDeclarationNode:
     def __init__ (self, var_name_token, expr_node=None):
@@ -35,7 +35,7 @@ class VarDeclarationNode:
 
     def __repr__ (self):
         if self.expr_node:
-            return f'{self.var_token} = ({self.expr_node})'
+            return f'{self.var_name_token} = ({self.expr_node})'
         return f'{self.var_token}'
 
 class BinOpNode:
@@ -66,7 +66,7 @@ class StatementListNode:
         self.pos_end = self.list[-1].pos_end
     
     def __repr__ (self):
-        return self.list
+        return self.list.__repr__()
 
 class IfNode:
     def __init__(self, expr_node, stmt):
@@ -77,7 +77,7 @@ class IfNode:
         
 
     def __repr__(self):
-        return f'({self.expr_node}, {self.stmt})'  
+        return f'IF({self.expr_node}, {self.stmt})'  
 
 class IfElseNode:
     def __init__(self, expr_node, stmt1, stmt2):
@@ -89,4 +89,46 @@ class IfElseNode:
         
 
     def __repr__(self):
-        return f'({self.expr_node}, {self.stmt1}, {self.stmt2})'  
+        return f'IF_ELSE({self.expr_node}, {self.stmt1}, {self.stmt2})'  
+
+class FuncDefNode:
+    def __init__(self, var_name_tok, arg_name_toks, body_node):
+        self.var_name_tok = var_name_tok
+        self.arg_name_toks = arg_name_toks
+        self.body_node = body_node
+
+        if self.var_name_tok:
+            self.pos_start = self.var_name_tok.pos_start
+        elif len(self.arg_name_toks) > 0:
+            self.pos_start = self.arg_name_toks[0].pos_start
+        else:
+            self.pos_start = self.body_node.pos_start
+
+        self.pos_end = self.body_node.pos_end
+    
+    def __repr__(self):
+        return f'FUNCTION <{self.var_name_tok}> ({self.arg_name_toks}) -> {self.body_node}'
+
+class ReturnNode:
+    def __init__(self, node_to_return, pos_start, pos_end):
+        self.node_to_return = node_to_return
+        self.pos_start = pos_start
+        self.pos_end = pos_end
+
+    def __repr__(self):
+        return f'RETURN({self.node_to_return})'
+
+class FuncCallNode:
+    def __init__(self, node_to_call, arg_nodes):
+        self.node_to_call = node_to_call
+        self.arg_nodes = arg_nodes
+
+        self.pos_start = self.node_to_call.pos_start
+
+        if len(self.arg_nodes) > 0:
+            self.pos_end = self.arg_nodes[len(self.arg_nodes) - 1].pos_end
+        else:
+            self.pos_end = self.node_to_call.pos_end
+
+    def __repr__(self):
+        return f'({self.node_to_call})'

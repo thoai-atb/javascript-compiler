@@ -34,7 +34,20 @@ class NodePrinter:
         self.construct(node.expr_node, expr)
         self.construct(node.stmt1, stmt1)
         self.construct(node.stmt2, stmt2)
-        
+    
+    def construct_FuncDefNode(self, node, print_node):
+        name = Node(node.var_name_tok, print_node)
+        args = Node("Args" + str(node.arg_name_toks), print_node)
+        body_node = Node(self.get_name(node.body_node), print_node)
+        self.construct(node.body_node, body_node)
+    
+    def construct_ReturnNode(self, node, print_node):
+        Rnode = Node(self.get_name(node.node_to_return), print_node)
+        self.construct(node.node_to_return, Rnode)
+
+    def construct_FuncCallNode(self, node, print_node):
+        Node(str(node.node_to_call), print_node)
+        Node(str(node.arg_nodes), print_node)
 
     def construct_NumberNode(self, node, print_node):
         Node(str(node.token.value), print_node)

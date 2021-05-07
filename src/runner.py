@@ -31,6 +31,7 @@ def run(file_name, text):
     print('\nRESULT OF PARSER: ')
     printer = NodePrinter(ast.node)
     printer.print()
+    print()
 
     # INTERPRETATION
     interpreter = Interpreter()

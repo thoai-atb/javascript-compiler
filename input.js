@@ -1,11 +1,7 @@
-var a = 1
-var b = 2
-function add(c, d) {
-    var e = 3
-    return c + d + e
-    if (e > 0) {
-        return 3
-    }
+function factorial(n) {
+    if (n < 2)
+        return 1
+    return factorial(n-1) * n
 }
 
-var sum = add(a - 1, b + 1)
+factorial(5)

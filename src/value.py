@@ -53,8 +53,9 @@ class Function(Value):
             new_context.symbol_table.set(arg_name, arg_value)
 
         value = res.register(new_interpreter.visit(self.body_node, new_context))
-        if res.error: return res
-        return res.success(value)
+        if res.should_return() and res.return_value == None: return res
+        return_value = res.return_value or value
+        return res.success(return_value)
     
     def copy(self):
         copy = Function(self.name, self.body_node, self.arg_names)
@@ -62,6 +63,9 @@ class Function(Value):
         copy.set_pos(self.pos_start, self.pos_end)
         return copy
 
+    def __repr__ (self):
+            return f"<function {self.name}>"
+        
 class Number(Value):
     def __init__ (self, value):
         super().__init__(value)

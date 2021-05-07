@@ -3,22 +3,35 @@ from .token import *
 
 class RTResult:
     def __init__ (self):
+        self.reset()
+
+    def reset(self):
         self.value = None
         self.error = None
+        self.return_value = None
 
     def register(self, res):
-        if isinstance(res, RTResult):
-            if res.error:
-                self.error = res.error
+        self.error = res.error
+        self.return_value = res.return_value
         return res.value
 
     def success(self, value):
+        self.reset()
         self.value = value
         return self
-    
+
+    def success_return(self, value):
+        self.reset()
+        self.return_value = value
+        return self
+
     def failure(self, error):
+        self.reset()
         self.error = error
         return self
+    
+    def should_return(self):
+        return self.error or self.return_value
 
 class Interpreter:
     def visit(self, node, context):
@@ -55,7 +68,7 @@ class Interpreter:
                 node.var_name_token.pos_start, node.var_name_token.pos_end, f'Variable {var_name} is not defined', context
             ))
         value = res.register(self.visit(node.expr_node, context))
-        if res.error: return res
+        if res.should_return(): return res
         context.symbol_table.set(var_name, value)
         return res.success(value)
  
@@ -67,29 +80,29 @@ class Interpreter:
                 node.var_name_token.pos_start, node.var_name_token.pos_end, f'Variable {var_name} is already declared', context
             ))
         value = res.register(self.visit(node.expr_node, context))
-        if res.error: return res
+        if res.should_return(): return res
         context.symbol_table.set(var_name, value)
         return res.success(value)
 
     def visit_IfElseNode(self, node, context):
         res = RTResult()
         expr_bool = res.register(self.visit(node.expr_node, context))
-        if res.error: return res
+        if res.should_return(): return res
         if expr_bool.is_true():
             result = res.register(self.visit(node.stmt1, context))
-            if res.error: return res
+            if res.should_return(): return res
             return res.success(result)
         result = res.register(self.visit(node.stmt2, context))
-        if res.error: return res
+        if res.should_return(): return res
         return res.success(result.set_pos(node.pos_start, node.pos_end))
     
     def visit_IfNode(self, node, context):
         res = RTResult()
         expr_bool = res.register(self.visit(node.expr_node, context))
-        if res.error: return res
+        if res.should_return(): return res
         if expr_bool.is_true():
             result = res.register(self.visit(node.stmt, context))
-            if res.error: return res
+            if res.should_return(): return res
             return res.success(result)
         return res.success(None)
 
@@ -111,34 +124,38 @@ class Interpreter:
         args = []
 
         value_to_call = res.register(self.visit(node.node_to_call, context))
-        if res.error: return res
+        if res.should_return(): return res
         value_to_call = value_to_call.copy().set_pos(node.pos_start, node.pos_end)
 
         for arg_node in node.arg_nodes:
             args.append(res.register(self.visit(arg_node, context)))
-            if res.error: return res
+            if res.should_return(): return res
 
         return_val = res.register(value_to_call.execute(args))
-        if res.error: return res
+        if res.should_return(): return res
         return res.success(return_val)
 
     def visit_ReturnNode(self, node, context):
-        return RTResult()
+        res = RTResult()
+        value = None
+        if node.node_to_return:
+            value = res.register(self.visit(node.node_to_return, context))
+        return res.success_return(value)
 
     def visit_StatementListNode(self, node, context):
         res = RTResult()
         value = None
         for n in node.list:
             value = res.register(self.visit(n, context))
-            if res.error: return res
+            if res.should_return(): return res
         return res.success(value)
        
     def visit_BinOpNode(self, node, context):
         res = RTResult()
         left = res.register(self.visit(node.left_node, context))
-        if res.error: return res
+        if res.should_return(): return res
         right = res.register(self.visit(node.right_node, context))
-        if res.error: return res
+        if res.should_return(): return res
 
         result = None
         error = None
@@ -176,7 +193,7 @@ class Interpreter:
     def visit_UnaryOpNode(self, node, context):
         res = RTResult()
         number = res.register(self.visit(node.node, context))
-        if res.error: return res
+        if res.should_return(): return res
 
         result = None
         error = None

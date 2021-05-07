@@ -1,6 +1,4 @@
 from .error import *
-from .context import *
-from .symbol_table import *
 
 class Value:
     def __init__ (self, value=None):
@@ -31,31 +29,6 @@ class Function(Value):
         self.name = name or '<anonymous>'
         self.body_node = body_node
         self.arg_names = arg_names
-
-    def execute(self, args):
-        from .interpreter import Interpreter, RTResult
-        res = RTResult()
-        new_interpreter = Interpreter()
-        new_context = Context(self.name, self.context, self.pos_start)
-        new_context.symbol_table = SymbolTable(new_context.parent.symbol_table)
-
-        if len(args) != len(self.arg_names):
-            return res.failure(RTError(
-                self.pos_start, self.pos_end,
-                f'Numbers of args do not match (expected {len(self.arg_names)} but found {len(args)})',
-                self.context
-            ))
-
-        for i in range(len(args)):
-            arg_name = self.arg_names[i]
-            arg_value = args[i]
-            arg_value.set_context(new_context)
-            new_context.symbol_table.set(arg_name, arg_value)
-
-        value = res.register(new_interpreter.visit(self.body_node, new_context))
-        if res.should_return() and res.return_value == None: return res
-        return_value = res.return_value or value
-        return res.success(return_value)
     
     def copy(self):
         copy = Function(self.name, self.body_node, self.arg_names)
@@ -89,7 +62,7 @@ class Number(Value):
         if isinstance(other, Number):
             if other.value == 0:
                 return None, RTError(
-                    other.start_pos, other.end_pos, "Division by zero", self.context
+                    other.pos_start, other.pos_end, "Division by zero", self.context
                 )
             return Number(self.value / other.value).set_context(self.context), None
     

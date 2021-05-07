@@ -1,5 +1,7 @@
 from .value import *
 from .token import *
+from .context import *
+from .symbol_table import *
 
 class RTResult:
     def __init__ (self):
@@ -131,15 +133,40 @@ class Interpreter:
             args.append(res.register(self.visit(arg_node, context)))
             if res.should_return(): return res
 
-        return_val = res.register(value_to_call.execute(args))
+        return_val = res.register(self.execute_function(value_to_call, args))
         if res.should_return(): return res
         return res.success(return_val)
+
+    def execute_function(self, func, args):
+        res = RTResult()
+        new_interpreter = Interpreter()
+        new_context = Context(func.name, func.context, func.pos_start)
+        new_context.symbol_table = SymbolTable(new_context.parent.symbol_table)
+
+        if len(args) != len(func.arg_names):
+            return res.failure(RTError(
+                func.pos_start, func.pos_end,
+                f'Numbers of args do not match (expected {len(func.arg_names)} but found {len(args)})',
+                func.context
+            ))
+
+        for i in range(len(args)):
+            arg_name = func.arg_names[i]
+            arg_value = args[i]
+            arg_value.set_context(new_context)
+            new_context.symbol_table.set(arg_name, arg_value)
+
+        value = res.register(new_interpreter.visit(func.body_node, new_context))
+        if res.should_return() and res.return_value == None: return res
+        return_value = res.return_value or value
+        return res.success(return_value)
 
     def visit_ReturnNode(self, node, context):
         res = RTResult()
         value = None
         if node.node_to_return:
             value = res.register(self.visit(node.node_to_return, context))
+            if res.should_return(): return res
         return res.success_return(value)
 
     def visit_StatementListNode(self, node, context):

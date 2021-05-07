@@ -138,6 +138,7 @@ class Interpreter:
         return res.success(return_val)
 
     def execute_function(self, func, args):
+        # print(func.name, func.context.display_name)
         res = RTResult()
         new_interpreter = Interpreter()
         new_context = Context(func.name, func.context, func.pos_start)

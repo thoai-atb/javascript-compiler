@@ -4,9 +4,9 @@ from .error import *
 from .interpreter import * 
 from .lexer import * 
 from .node import * 
-from .number import * 
+from .value import * 
 from .parser import * 
 from .position import * 
 from .runner import * 
 from .symbol_table import * 
-from .token import * 
+from .token import *

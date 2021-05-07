@@ -104,39 +104,30 @@ class Parser:
             self.advance()
             if (self.current_token.type != TT_LPAREN):
                 return res.success(VarAccessNode(token))
+            func_name_node = VarAccessNode(token)
+            self.advance()
+            arg_nodes = []
+            if self.current_token.type == TT_RPAREN:
+                self.advance()
             else:
-                function = token
-                self.advance()
-                arg_name_toks = []
-                if self.current_token.type == TT_IDENTIFIER:
-                    arg_name_toks.append(self.current_token)
+                arg_nodes.append(res.register(self.expr()))
+                if res.error: return res
+
+                while self.current_token.type == TT_COMMA:
                     self.advance()
-                    
-                    while self.current_token.type == TT_COMMA:
-                        self.advance()
+                    arg_nodes.append(res.register(self.expr()))
+                    if res.error: return res
 
-                        if self.current_token.type != TT_IDENTIFIER:
-                            return res.failure(InvalidSyntaxError(
-                                self.current_token.pos_start, self.current_token.pos_end,
-                                f"Expected identifier"
-                            ))
-
-                        arg_name_toks.append(self.current_token)
-                        self.advance()
-                    
-                    if self.current_token.type != TT_RPAREN:
-                        return res.failure(InvalidSyntaxError(
-                            self.current_token.pos_start, self.current_token.pos_end,
-                            f"Expected ',' or ')'"
-                        ))
-                else:
-                    if self.current_token.type != TT_RPAREN:
-                        return res.failure(InvalidSyntaxError(
-                            self.current_token.pos_start, self.current_token.pos_end,
-                            f"Expected identifier or ')'"
-                        ))
+                if self.current_token.type != TT_RPAREN:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_token.pos_start, self.current_token.pos_end,
+                        f"Expected ',' or ')'"
+                    ))
+                
                 self.advance()
-                return res.success(FuncCallNode(function, arg_name_toks))
+
+            return res.success(FuncCallNode(func_name_node, arg_nodes))
+
         # ( Expresion )
         elif token.type == TT_LPAREN:
             self.advance()

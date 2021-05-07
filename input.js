@@ -8,4 +8,4 @@ function add(c, d) {
     }
 }
 
-var sum = add(a, b)
+var sum = add(a - 1, b + 1)

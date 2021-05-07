@@ -1,22 +1,73 @@
 from .error import *
+from .context import *
+from .symbol_table import *
 
-class Number:
-    def __init__ (self, value):
+class Value:
+    def __init__ (self, value=None):
         self.value = value
         self.set_pos()
         self.set_context()
     
-    def set_pos(self, start_pos=None, end_pos=None):
-        self.start_pos = start_pos
-        self.end_pos = end_pos
+    def set_pos(self, pos_start=None, pos_end=None):
+        self.pos_start = pos_start
+        self.pos_end = pos_end
         return self
 
     def set_context(self, context=None):
         self.context = context
         return self
 
+    def illegal_operation(self, other=None):
+        if not other: other = self
+        return RTError(
+            self.pos_start, other.pos_end,
+            'Illegal Operation',
+            self.context
+        )
+
+class Function(Value):
+    def __init__(self, name, body_node, arg_names):
+        super().__init__()
+        self.name = name or '<anonymous>'
+        self.body_node = body_node
+        self.arg_names = arg_names
+
+    def execute(self, args):
+        from .interpreter import Interpreter, RTResult
+        res = RTResult()
+        new_interpreter = Interpreter()
+        new_context = Context(self.name, self.context, self.pos_start)
+        new_context.symbol_table = SymbolTable(new_context.parent.symbol_table)
+
+        if len(args) != len(self.arg_names):
+            return res.failure(RTError(
+                self.pos_start, self.pos_end,
+                f'Numbers of args do not match (expected {len(self.arg_names)} but found {len(args)})',
+                self.context
+            ))
+
+        for i in range(len(args)):
+            arg_name = self.arg_names[i]
+            arg_value = args[i]
+            arg_value.set_context(new_context)
+            new_context.symbol_table.set(arg_name, arg_value)
+
+        value = res.register(new_interpreter.visit(self.body_node, new_context))
+        if res.error: return res
+        return res.success(value)
+    
     def copy(self):
-        return Number(self.value).set_context(self.context).set_pos(self.start_pos, self.end_pos)
+        copy = Function(self.name, self.body_node, self.arg_names)
+        copy.set_context(self.context)
+        copy.set_pos(self.pos_start, self.pos_end)
+        return copy
+
+class Number(Value):
+    def __init__ (self, value):
+        super().__init__(value)
+
+    def copy(self):
+        return Number(self.value).set_context(self.context).set_pos(self.pos_start, self.pos_start)
 
     def add(self, other):
         if isinstance(other, Number):

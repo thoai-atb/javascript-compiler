@@ -1,6 +1,6 @@
 class SymbolTable:
-    def __init__ (self):
-        self.parent = None
+    def __init__ (self, parent=None):
+        self.parent = parent
         self.symbols = {}
 
     def has(self, name):

@@ -30,6 +30,9 @@ changed:
     or -> ||
     not -> !
 
+function:
+    don't create new interpreter, only 1 interpreter exists
+
 /////////////////////// IN PPTREE:
 
 Fix order by changing to this:

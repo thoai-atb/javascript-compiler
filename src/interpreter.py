@@ -140,7 +140,6 @@ class Interpreter:
     def execute_function(self, func, args):
         # print(func.name, func.context.display_name)
         res = RTResult()
-        new_interpreter = Interpreter()
         new_context = Context(func.name, func.context, func.pos_start)
         new_context.symbol_table = SymbolTable(new_context.parent.symbol_table)
 
@@ -157,7 +156,7 @@ class Interpreter:
             arg_value.set_context(new_context)
             new_context.symbol_table.set(arg_name, arg_value)
 
-        value = res.register(new_interpreter.visit(func.body_node, new_context))
+        value = res.register(self.visit(func.body_node, new_context))
         if res.should_return() and res.return_value == None: return res
         return_value = res.return_value or value
         return res.success(return_value)

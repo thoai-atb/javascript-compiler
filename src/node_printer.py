@@ -1,9 +1,10 @@
 from lib.pptree import *
 
 class NodePrinter:
-    def __init__ (self, node):
+    def __init__ (self, node, log_file):
         self.print_node = Node(self.get_name(node))
         self.construct(node, self.print_node)
+        self.log_file = log_file
 
     def get_name(self, node):
         return type(node).__name__
@@ -79,4 +80,4 @@ class NodePrinter:
         raise Exception(f'No construct_{type(node).__name__} method defined')
 
     def print(self):
-        print_tree(self.print_node, horizontal=True)
+        print_tree(self.print_node, horizontal=True, log_file=self.log_file)

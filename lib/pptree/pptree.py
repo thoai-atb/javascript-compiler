@@ -17,7 +17,11 @@ class Node:
             self.parent.children.append(self)
 
 
-def print_tree(current_node, childattr='children', nameattr='name', horizontal=True):
+def print_to_file(log_file, string):
+    log_file.write(string + '\n')
+
+
+def print_tree(current_node, childattr='children', nameattr='name', horizontal=True, log_file=None):
     if hasattr(current_node, nameattr):
         name = lambda node: getattr(node, nameattr)
     else:
@@ -38,13 +42,13 @@ def print_tree(current_node, childattr='children', nameattr='name', horizontal=T
         return a, b
 
     if horizontal:
-        print_tree_horizontally(current_node, balanced_branches, name)
+        print_tree_horizontally(current_node, balanced_branches, name, log_file=log_file)
 
     else:
-        print_tree_vertically(current_node, balanced_branches, name, children)
+        print_tree_vertically(current_node, balanced_branches, name, children, log_file=log_file)
 
 
-def print_tree_horizontally(current_node, balanced_branches, name_getter, indent='', last='updown'):
+def print_tree_horizontally(current_node, balanced_branches, name_getter, indent='', last='updown', log_file=None):
 
     up, down = balanced_branches(current_node)
 
@@ -52,7 +56,7 @@ def print_tree_horizontally(current_node, balanced_branches, name_getter, indent
     for child in up:     
         next_last = 'up' if up.index(child) == 0 else ''
         next_indent = '{0}{1}{2}'.format(indent, ' ' if 'up' in last else '│', ' ' * len(name_getter(current_node)))
-        print_tree_horizontally(child, balanced_branches, name_getter, next_indent, next_last)
+        print_tree_horizontally(child, balanced_branches, name_getter, next_indent, next_last, log_file)
 
     """ Printing of current node. """
     if last == 'up': start_shape = '┌'
@@ -64,13 +68,13 @@ def print_tree_horizontally(current_node, balanced_branches, name_getter, indent
     elif down: end_shape = '┐'
     else: end_shape = ''
 
-    print('{0}{1}{2}{3}'.format(indent, start_shape, name_getter(current_node), end_shape))
+    print_to_file(log_file, '{0}{1}{2}{3}'.format(indent, start_shape, name_getter(current_node), end_shape))
 
     """ Printing of "down" branch. """
     for child in down:
         next_last = 'down' if down.index(child) is len(down) - 1 else ''
         next_indent = '{0}{1}{2}'.format(indent, ' ' if 'down' in last else '│', ' ' * len(name_getter(current_node)))
-        print_tree_horizontally(child, balanced_branches, name_getter, next_indent, next_last)
+        print_tree_horizontally(child, balanced_branches, name_getter, next_indent, next_last, log_file)
 
 
 def tree_repr(current_node, balanced_branches, name, children):
@@ -103,5 +107,5 @@ def tree_repr(current_node, balanced_branches, name, children):
     return multijoin([[current_name, *children_repr]]), (max(left_len, name_l), max(right_len, name_r))
 
 
-def print_tree_vertically(*args):
-    print('\n'.join(tree_repr(*args)[0]))
+def print_tree_vertically(*args, log_file):
+    print_to_file(log_file, '\n'.join(tree_repr(*args)[0]))

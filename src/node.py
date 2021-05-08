@@ -132,4 +132,4 @@ class FuncCallNode:
             self.pos_end = self.node_to_call.pos_end
 
     def __repr__(self):
-        return f'({self.node_to_call})'
+        return f'CALL: {self.node_to_call} ({self.arg_nodes})'

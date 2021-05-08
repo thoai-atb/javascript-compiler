@@ -24,7 +24,7 @@ def run(program_file_path, log_file_path):
     tokens, error = lexer.make_tokens()
     if error:
         return None, error
-    log_file.write('RESULT OF LEXER: \n')
+    log_file.write('TOKEN LIST:\n\n')
     log_file.write(str(tokens))
     log_file.write('\n')
     log_file.write('\n')
@@ -34,14 +34,15 @@ def run(program_file_path, log_file_path):
     ast = parser.parse()
     if ast.error:
         return None, ast.error
-    log_file.write('RESULT OF PARSER: \n')
+    log_file.write('ABSTRACT SYNTAX TREE:\n\n')
     printer = NodePrinter(ast.node, log_file)
     printer.print()
     log_file.write('\n')
 
     # INTERPRETATION
-    interpreter = Interpreter()
+    interpreter = Interpreter(log_file)
     context = Context('<program>')
     context.symbol_table = global_symbol_table
+    log_file.write('EXECUTION PROCESS:\n')
     result = interpreter.visit(ast.node, context)
     return result.value, result.error

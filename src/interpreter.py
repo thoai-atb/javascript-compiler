@@ -36,7 +36,12 @@ class RTResult:
         return self.error or self.return_value
 
 class Interpreter:
+    def __init__(self, log_file):
+        self.log_file = log_file
+
     def visit(self, node, context):
+        tabs = context.get_depth() * '\t'
+        self.log_file.write(f'\n{tabs}Visit {type(node).__name__}: {node}')
         method_name = f'visit_{type(node).__name__}'
         method = getattr(self, method_name, self.no_visit_method)
         return method(node, context)
@@ -127,7 +132,7 @@ class Interpreter:
 
         value_to_call = res.register(self.visit(node.node_to_call, context))
         if res.should_return(): return res
-        value_to_call = value_to_call.copy().set_pos(node.pos_start, node.pos_end)
+        value_to_call = value_to_call.copy().set_pos(node.pos_start, node.pos_end).set_context(context)
 
         for arg_node in node.arg_nodes:
             args.append(res.register(self.visit(arg_node, context)))
@@ -138,7 +143,6 @@ class Interpreter:
         return res.success(return_val)
 
     def execute_function(self, func, args):
-        # print(func.name, func.context.display_name)
         res = RTResult()
         new_context = Context(func.name, func.context, func.pos_start)
         new_context.symbol_table = SymbolTable(new_context.parent.symbol_table)

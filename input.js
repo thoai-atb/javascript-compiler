@@ -1,8 +1,10 @@
-function factorial(n) {
-    if (n < 2)
-        return 1
-    return factorial(n-1) * n
+function mult(a, b) {
+   return a * b / 0
 }
 
-factorial(5)
+function compound(a, b, c) {
+   return a + mult(b, c)
+}
+
+var c = compound(10, 3, 2)
 

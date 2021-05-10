@@ -76,19 +76,19 @@ class Interpreter:
             ))
         value = res.register(self.visit(node.expr_node, context))
         if res.should_return(): return res
-        context.symbol_table.set(var_name, value)
+        context.symbol_table.set_assign(var_name, value)
         return res.success(value)
  
     def visit_VarDeclarationNode(self, node, context):
         res = RTResult()
         var_name = node.var_name_token.value
-        if context.symbol_table.has(var_name):
+        if context.symbol_table.has_local(var_name):
             return res.failure(RTError(
                 node.var_name_token.pos_start, node.var_name_token.pos_end, f'Variable {var_name} is already declared', context
             ))
         value = res.register(self.visit(node.expr_node, context))
         if res.should_return(): return res
-        context.symbol_table.set(var_name, value)
+        context.symbol_table.set_declar(var_name, value)
         return res.success(value)
 
     def visit_IfElseNode(self, node, context):
@@ -122,7 +122,7 @@ class Interpreter:
         func_value = Function(func_name, body_node, arg_names).set_context(context).set_pos(node.pos_start, node.pos_end)
 
         if node.var_name_tok:
-            context.symbol_table.set(func_name, func_value)
+            context.symbol_table.set_declar(func_name, func_value)
         
         return res.success(func_value)
 
@@ -158,7 +158,7 @@ class Interpreter:
             arg_name = func.arg_names[i]
             arg_value = args[i]
             arg_value.set_context(new_context)
-            new_context.symbol_table.set(arg_name, arg_value)
+            new_context.symbol_table.set_declar(arg_name, arg_value)
 
         value = res.register(self.visit(func.body_node, new_context))
         if res.should_return() and res.return_value == None: return res

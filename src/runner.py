@@ -10,10 +10,10 @@ import math
 ############################################################### RUN
 
 global_symbol_table = SymbolTable()
-global_symbol_table.set('NULL', Number(0))
-global_symbol_table.set('TRUE', Number(1))
-global_symbol_table.set('FALSE', Number(0))
-global_symbol_table.set('PI', Number(math.pi))
+global_symbol_table.set_declar('NULL', Number(0))
+global_symbol_table.set_declar('TRUE', Number(1))
+global_symbol_table.set_declar('FALSE', Number(0))
+global_symbol_table.set_declar('PI', Number(math.pi))
 
 def run(program_file_path, log_file_path):
     # OPEN LOG FILE

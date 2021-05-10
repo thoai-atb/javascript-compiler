@@ -1,10 +1,6 @@
-function mult(a, b) {
-   return a * b / 0
+function sum(a, b, c) {
+   var sum = a + b + c
+   return sum
 }
 
-function compound(a, b, c) {
-   return a + mult(b, c)
-}
-
-var c = compound(10, 3, 2)
-
+sum(1, 2, sum(3, 4, 5))

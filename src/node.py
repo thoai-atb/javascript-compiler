@@ -120,16 +120,14 @@ class ReturnNode:
         return f'RETURN({self.node_to_return})'
 
 class FuncCallNode:
-    def __init__(self, node_to_call, arg_nodes):
+    def __init__(self, node_to_call, open_paren, arg_nodes, close_paren):
         self.node_to_call = node_to_call
+        self.open_paren = open_paren
         self.arg_nodes = arg_nodes
+        self.close_paren = close_paren
 
         self.pos_start = self.node_to_call.pos_start
-
-        if len(self.arg_nodes) > 0:
-            self.pos_end = self.arg_nodes[len(self.arg_nodes) - 1].pos_end
-        else:
-            self.pos_end = self.node_to_call.pos_end
-
+        self.pos_end = self.close_paren.pos_end
+        
     def __repr__(self):
         return f'CALL: {self.node_to_call} ({self.arg_nodes})'

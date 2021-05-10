@@ -3,4 +3,4 @@ function sum(a, b, c) {
    return sum
 }
 
-sum(1, 2, sum(3, 4, 5))
+sum(1, 2, sum(3, 4))

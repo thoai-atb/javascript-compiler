@@ -1,6 +1,6 @@
 from lib.pptree import *
 
-class NodePrinter:
+class ASTPrinter:
     def __init__ (self, node, log_file):
         self.print_node = Node(self.get_name(node))
         self.construct(node, self.print_node)

@@ -104,10 +104,12 @@ class Parser:
             self.advance()
             if (self.current_token.type != TT_LPAREN):
                 return res.success(VarAccessNode(token))
+            left_paren_tok = self.current_token
             func_name_node = VarAccessNode(token)
             self.advance()
             arg_nodes = []
             if self.current_token.type == TT_RPAREN:
+                right_paren_tok = self.current_token
                 self.advance()
             else:
                 arg_nodes.append(res.register(self.expr()))
@@ -123,10 +125,10 @@ class Parser:
                         self.current_token.pos_start, self.current_token.pos_end,
                         f"Expected ',' or ')'"
                     ))
-                
+                right_paren_tok = self.current_token
                 self.advance()
 
-            return res.success(FuncCallNode(func_name_node, arg_nodes))
+            return res.success(FuncCallNode(func_name_node, left_paren_tok, arg_nodes, right_paren_tok))
 
         # ( Expresion )
         elif token.type == TT_LPAREN:

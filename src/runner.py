@@ -3,7 +3,7 @@ from .parser import *
 from .interpreter import *
 from .symbol_table import *
 from .context import *
-from .node_printer import *
+from .ast_printer import *
 import codecs
 import math
 
@@ -35,7 +35,7 @@ def run(program_file_path, log_file_path):
     if ast.error:
         return None, ast.error
     log_file.write('ABSTRACT SYNTAX TREE:\n\n')
-    printer = NodePrinter(ast.node, log_file)
+    printer = ASTPrinter(ast.node, log_file)
     printer.print()
     log_file.write('\n')
 

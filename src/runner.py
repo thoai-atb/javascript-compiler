@@ -3,6 +3,7 @@ from .parser import *
 from .interpreter import *
 from .symbol_table import *
 from .context import *
+from .parse_printer import *
 from .ast_printer import *
 import codecs
 import math
@@ -34,6 +35,12 @@ def run(program_file_path, log_file_path):
     ast = parser.parse()
     if ast.error:
         return None, ast.error
+
+    log_file.write('PARSE TREE:\n\n')
+    printer = ParsePrinter(ast.node, log_file)
+    printer.print()
+    log_file.write('\n')
+
     log_file.write('ABSTRACT SYNTAX TREE:\n\n')
     printer = ASTPrinter(ast.node, log_file)
     printer.print()

@@ -208,6 +208,7 @@ class Parser:
 
     def func_def(self):
         res = ParseResult()
+        func_tok = self.current_token
         self.advance()
 
         if self.current_token.type == TT_IDENTIFIER:
@@ -264,6 +265,7 @@ class Parser:
 
         if res.error: return res
         return res.success(FuncDefNode(
+            func_tok,
             var_name_tok,
             arg_name_toks,
             node_to_return

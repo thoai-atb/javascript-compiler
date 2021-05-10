@@ -93,7 +93,8 @@ class IfElseNode:
         return f'IF_ELSE({self.expr_node}, {self.stmt1}, {self.stmt2})'  
 
 class FuncDefNode:
-    def __init__(self, var_name_tok, arg_name_toks, body_node):
+    def __init__(self, func_tok, var_name_tok, arg_name_toks, body_node):
+        self.func_tok = func_tok
         self.var_name_tok = var_name_tok
         self.arg_name_toks = arg_name_toks
         self.body_node = body_node

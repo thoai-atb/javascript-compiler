@@ -38,7 +38,10 @@ class ParsePrinter:
     def construct_FuncDefNode(self, node, print_node):
         func_keyword = Node(str(node.func_tok), print_node)
         name = Node(node.var_name_tok, print_node)
-        args = Node("Args" + str(node.arg_name_toks), print_node)
+
+        parameters = Node("Parameters", print_node)
+        for a in node.arg_name_toks: Node(str(a), parameters)
+
         body_node = Node(self.get_name(node.body_node), print_node)
         self.construct(node.body_node, body_node)
     
@@ -49,11 +52,14 @@ class ParsePrinter:
     def construct_FuncCallNode(self, node, print_node):
         Node(str(node.node_to_call), print_node)
         left_paren = Node(str(node.open_paren), print_node)
-        Node(str(node.arg_nodes), print_node)
+        args = Node('Arguments', print_node)
+        for a in node.arg_nodes:
+            n = Node(self.get_name(a), args)
+            self.construct(a, n)
         right_paren = Node(str(node.close_paren), print_node)
 
     def construct_NumberNode(self, node, print_node):
-        Node(str(node.token.value), print_node)
+        Node(str(node.token), print_node)
 
     def construct_VarAccessNode(self, node, print_node):
         Node(str(node.token), print_node)

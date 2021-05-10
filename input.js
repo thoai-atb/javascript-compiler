@@ -1,6 +1,7 @@
-function sum(a, b, c) {
-   var sum = a + b + c
+function sum(a, b) {
+   var sum = a + b + 1
    return sum
 }
 
-sum(1, 2, sum(3, 4))
+var c = 1
+sum(1, c, sum(3, 4))

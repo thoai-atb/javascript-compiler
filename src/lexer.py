@@ -24,6 +24,13 @@ class Lexer:
                 tokens.append(self.make_identifier())
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
+            elif self.current_char == '"' or self.current_char == "'":
+                if(self.current_char == "'"):
+                    tokens.append(self.make_string("single"))
+                if(self.current_char == '"'):
+                    tokens.append(self.make_string("double"))
+            elif self.current_char == '/':
+                tokens.append(self.make_comment())
             elif self.current_char == '+':
                 tokens.append(Token(TT_PLUS, pos_start=self.pos))
                 self.advance()
@@ -99,6 +106,71 @@ class Lexer:
         if dot_count == 1:
             return Token(TT_FLOAT, float(num_str), pos_start, self.pos)
         return Token(TT_INT, int(num_str), pos_start, self.pos)
+    
+    def make_string(self,quote_type):
+        string = ""
+        pos_start = self.pos.copy()
+        self.advance()
+
+        escape_characters = {
+            'n': '\n',
+            't': '\t',
+            '"' : "\"" if quote_type == "double" else None,
+            "'" : '\''if quote_type == "single" else None
+        }
+
+        escape_character = False
+
+        while self.current_char != None and (((self.current_char != "'" and quote_type == "single") or (self.current_char != '"' and quote_type == "double")) or escape_character):
+            if(escape_character):
+                if(self.current_char == "\\"):
+                    string += "\\"
+                else:
+                    string += escape_characters.get(self.current_char)
+                escape_character = False
+            else:
+                if self.current_char == '\\':
+                    escape_character = True
+                else:
+                    string += self.current_char
+
+            self.advance()
+
+        pos_end = self.pos.copy()    
+
+        if(self.current_char == "'" and quote_type == "single") or (self.current_char == '"' and quote_type == "double"):
+            self.advance()
+            return(Token(TT_STRING,string,pos_start,self.pos.copy()))
+        return [], ExpectedCharError(pos_end, self.pos.copy(), "' expected at end the string" if quote_type == "single" else '" expected at end the string')
+        
+    
+    def make_comment(self):
+        comment_str = ""
+        pos_start = self.pos.copy()
+        self.advance()
+        if(self.current_char == "/" or self.current_char =="*") :
+            if(self.current_char == "/"):
+                self.advance()
+                while(self.current_char != "\n" and self.current_char != None):
+                    comment_str += self.current_char
+                    self.advance()
+
+            elif(self.current_char == "*"):
+                self.advance()
+                end = False
+                while(end != True):
+                    if(self.current_char == "*"):
+                        temp_char = self.current_char
+                        self.advance()
+                        if(self.current_char == "/"):
+                            end = True
+                        else:
+                            comment_str += temp_char
+                    elif self.current_char != None:
+                        comment_str += self.current_char
+                        self.advance()
+        self.advance()
+        return Token(TT_COMMENT,comment_str,pos_start,self.pos.copy())
 
     def make_identifier (self):
         id_str = ''
@@ -153,7 +225,7 @@ class Lexer:
             self.advance()
             return Token(TT_AND, pos_start=pos_start, pos_end=self.pos.copy()), None
         self.advance()
-        return [], ExpectedCharError(pos_mid, self.pos.copy(), "'&' (after '&')")
+         
     
     def make_or (self):
         pos_start = self.pos.copy()

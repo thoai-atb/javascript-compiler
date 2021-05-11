@@ -25,7 +25,7 @@ def run(program_file_path, log_file_path):
     tokens, error = lexer.make_tokens()
     if error:
         return None, error
-    log_file.write('TOKEN LIST:\n\n')
+    log_file.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TOKEN LIST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n\n')
     log_file.write(str(tokens))
     log_file.write('\n')
     log_file.write('\n')
@@ -36,12 +36,12 @@ def run(program_file_path, log_file_path):
     if ast.error:
         return None, ast.error
 
-    log_file.write('PARSE TREE:\n\n')
+    log_file.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ PARSE TREE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n\n')
     printer = ParsePrinter(ast.node, log_file)
     printer.print()
     log_file.write('\n')
 
-    log_file.write('ABSTRACT SYNTAX TREE:\n\n')
+    log_file.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ABSTRACT SYNTAX TREE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n\n')
     printer = ASTPrinter(ast.node, log_file)
     printer.print()
     log_file.write('\n')
@@ -50,6 +50,13 @@ def run(program_file_path, log_file_path):
     interpreter = Interpreter(log_file)
     context = Context('<program>')
     context.symbol_table = global_symbol_table
-    log_file.write('EXECUTION PROCESS:\n')
+    log_file.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ EXECUTION PROCESS @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n')
     result = interpreter.visit(ast.node, context)
+
+    log_file.write('\n')
+    log_file.write('\n')
+    log_file.write('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ SYMBOL TABLES @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n')
+    log_file.write('\n')
+    log_file.write(context.log())
+
     return result.value, result.error

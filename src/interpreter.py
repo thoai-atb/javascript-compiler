@@ -154,6 +154,7 @@ class Interpreter:
 
         res = RTResult(self.log_file, func.context)
         new_context = Context(func.name, func.context, func.pos_start)
+        func.context.children.append(new_context)
         new_context.symbol_table = SymbolTable(new_context.parent.symbol_table)
 
         if len(args) != len(func.arg_names):

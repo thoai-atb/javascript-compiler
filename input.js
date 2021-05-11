@@ -5,9 +5,11 @@ function factorial(n) {
    return p * n
 }
 
-var sample = 0
+function add(a, b) {
+   return a + b
+}
 
-if (sample == 0) 
-   factorial(3)
-else
-   factorial(5)
+var varone = 1
+var vartwo = 2
+
+factorial(add(varone, vartwo))

@@ -30,3 +30,9 @@ class SymbolTable:
     
     def remove(self, name):
         del self.symbols[name]
+
+    def __repr__(self):
+        rep = ""
+        for keys in self.symbols:
+            rep += f'\t{keys} : {self.symbols[keys]}\n'
+        return rep

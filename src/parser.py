@@ -57,7 +57,7 @@ class Parser:
     ####################################
 
     def parse(self):
-        res = self.stmt_list()
+        res = self.stmt_list(False)
         if not res.error and self.current_token.type != TT_EOF:
             return res.failure(InvalidSyntaxError(
                 self.current_token.pos_start, self.current_token.pos_end, "Cannot reach EOF token"
@@ -173,6 +173,7 @@ class Parser:
         res = ParseResult()
         # DECLARATION
         if self.current_token.matches(TT_KEYWORD, 'var'):
+            var_keyword = self.current_token
             self.advance()
             if self.current_token.type != TT_IDENTIFIER:
                 return res.failure(InvalidSyntaxError(
@@ -184,20 +185,22 @@ class Parser:
                 return res.failure(InvalidSyntaxError(
                     self.current_token.pos_start, self.current_token.pos_end, "Expected '='"
                 ))
+            equal_tok = self.current_token
             self.advance()
             expr = res.register(self.expr())
             if res.error: return res
-            return res.success(VarDeclarationNode(identifier_token, expr))
+            return res.success(VarDeclarationNode(var_keyword, identifier_token, equal_tok, expr))
         
         # ASSIGNMENT
         if self.current_token.type == TT_IDENTIFIER:
             identifier_token = self.current_token
             self.advance()
             if self.current_token.type == TT_EQUAL:
+                equal_tok = self.current_token
                 self.advance()
                 expr = res.register(self.expr())
                 if res.error: return res
-                return res.success(VarAssignNode(identifier_token, expr))
+                return res.success(VarAssignNode(identifier_token, equal_tok, expr))
             self.retract()
         
         node = res.register(self.bin_op(self.comp_expr, (TT_AND, TT_OR)))
@@ -211,6 +214,9 @@ class Parser:
         func_tok = self.current_token
         self.advance()
 
+        left_paren = None
+        right_paren = None
+
         if self.current_token.type == TT_IDENTIFIER:
             var_name_tok = self.current_token
             self.advance()
@@ -219,6 +225,7 @@ class Parser:
                     self.current_tok.pos_start, self.current_tok.pos_end,
                     f"Expected '('"
                 ))
+            left_paren = self.current_token
         else:
             var_name_tok = None
             if self.current_token.type != TT_LPAREN:
@@ -226,6 +233,7 @@ class Parser:
                     self.current_tok.pos_start, self.current_tok.pos_end,
                     f"Expected identifier or '('"
                 ))
+            left_paren = self.current_token
         
         self.advance()
         arg_name_toks = []
@@ -251,12 +259,14 @@ class Parser:
                     self.current_token.pos_start, self.current_token.pos_end,
                     f"Expected ',' or ')'"
                 ))
+            right_paren = self.current_token
         else:
             if self.current_token.type != TT_RPAREN:
                 return res.failure(InvalidSyntaxError(
                     self.current_token.pos_start, self.current_token.pos_end,
                     f"Expected identifier or ')'"
                 ))
+            right_paren = self.current_token
 
         self.advance()
         
@@ -267,7 +277,9 @@ class Parser:
         return res.success(FuncDefNode(
             func_tok,
             var_name_tok,
+            left_paren,
             arg_name_toks,
+            right_paren,
             node_to_return
         ))
         
@@ -277,23 +289,29 @@ class Parser:
 
         # If (expr) stmt else stmt
         if self.current_token.matches(TT_KEYWORD, 'if'):
+            keyword_if = self.current_token
             self.advance()
             if self.current_token.type == TT_LPAREN:
+                left_paren = self.current_token
                 self.advance()
                 expr = res.register(self.expr())
                 if res.error:
                     return res
                 if self.current_token.type == TT_RPAREN:
+                    right_paren = self.current_token
                     self.advance()
+                else:
+                    return res.failure(InvalidSyntaxError(self.current_token.pos_start, self.current_token.pos_end, "Expected ')'"))
                 self.skip_eol()
                 stmt1 = res.register(self.stmt())
                 if res.error:
                     return res
                 if self.current_token.type == TT_EOF:
-                    return res.success(IfNode(expr, stmt1))
+                    return res.success(IfNode(keyword_if, left_paren, expr, right_paren, stmt1))
                 self.push()
                 self.skip_eol()
                 if self.current_token.matches(TT_KEYWORD, 'else'):
+                    keyword_else = self.current_token
                     self.pop_discard()
                     self.advance()
                     self.skip_eol()
@@ -302,9 +320,9 @@ class Parser:
                         return res
                     while self.current_token.type != TT_EOL and self.current_token.type != TT_EOF:
                         self.retract()
-                    return res.success(IfElseNode(expr, stmt1, stmt2))
+                    return res.success(IfElseNode(keyword_if, left_paren, expr, right_paren, stmt1, keyword_else, stmt2))
                 self.pop()
-                return res.success(IfNode(expr, stmt1))
+                return res.success(IfNode(keyword_if, left_paren, expr, right_paren, stmt1))
             return res.failure(InvalidSyntaxError(
                 self.current_token.pos_start, self.current_token.pos_end, "Expected '('"
             ))
@@ -315,21 +333,14 @@ class Parser:
             return res.success(func_def)
         # return
         elif self.current_token.matches(TT_KEYWORD, 'return'):
+            keyword_return = self.current_token
             self.advance()
             return_node = res.register(self.expr())
             if res.error: return res
-            return res.success(ReturnNode(return_node, pos_start, self.current_token.pos_start.copy()))
+            return res.success(ReturnNode(keyword_return, return_node))
         # { stmt_list }
         elif self.current_token.type == TT_LCURLY:
-            self.advance()      
-            stmt_list = res.register(self.stmt_list())
-            if self.current_token.type == TT_RCURLY:
-                self.advance()
-                self.skip_eol()
-                return res.success(stmt_list)
-            return res.failure(InvalidSyntaxError(
-                self.current_token.pos_start, self.current_token.pos_end, "Expected '}'"
-            ))           
+            return res.success(res.register(self.stmt_list(True)))
         # expr  
         else:
             left = res.register(self.expr())
@@ -337,8 +348,11 @@ class Parser:
                 return res
             return res.success(left)
 
-    def stmt_list(self):
+    def stmt_list(self, has_brackets):
         res = ParseResult()
+        if has_brackets:
+            open_bracket = self.current_token
+            self.advance()
         stmts = []
         while self.current_token.type != TT_EOF:
             if self.current_token.type == TT_EOL:
@@ -357,5 +371,15 @@ class Parser:
             if self.current_token.type == TT_EOF:
                 continue
             return res.failure(InvalidSyntaxError(self.current_token.pos_start, self.current_token.pos_end, "Expected new line"))
-        return res.success(StatementListNode(stmts))
+
+        if has_brackets:
+            if self.current_token.type != TT_RCURLY:
+                return res.failure(InvalidSyntaxError(
+                    self.current_token.pos_start, self.current_token.pos_end, "Expected '}'"
+                ))
+            close_bracket = self.current_token
+            self.advance()
+            return res.success(StatementListNode(open_bracket, stmts, close_bracket))
+                   
+        return res.success(StatementListNode(None, stmts, None))
     

@@ -22,14 +22,21 @@ class ParsePrinter:
         self.construct(node.right_node, right)
 
     def construct_IfNode(self, node, print_node):
+        Node(str(node.keyword_if), print_node)
+        Node(str(node.left_paren), print_node)
         expr = Node(self.get_name(node.expr_node), print_node)
+        Node(str(node.right_paren), print_node)
         stmt = Node(self.get_name(node.stmt), print_node)
         self.construct(node.expr_node, expr)
         self.construct(node.stmt, stmt)
 
     def construct_IfElseNode(self, node, print_node):
+        Node(str(node.keyword_if), print_node)
+        Node(str(node.left_paren), print_node)
         expr = Node(self.get_name(node.expr_node), print_node)
+        Node(str(node.right_paren), print_node)
         stmt1 = Node(self.get_name(node.stmt1), print_node)
+        Node(str(node.keyword_else), print_node)
         stmt2 = Node(self.get_name(node.stmt2), print_node)
         self.construct(node.expr_node, expr)
         self.construct(node.stmt1, stmt1)
@@ -39,13 +46,16 @@ class ParsePrinter:
         func_keyword = Node(str(node.func_tok), print_node)
         name = Node(node.var_name_tok, print_node)
 
+        Node(str(node.left_paren), print_node)
         parameters = Node("Parameters", print_node)
         for a in node.arg_name_toks: Node(str(a), parameters)
+        Node(str(node.right_paren), print_node)
 
         body_node = Node(self.get_name(node.body_node), print_node)
         self.construct(node.body_node, body_node)
     
     def construct_ReturnNode(self, node, print_node):
+        Node(str(node.keyword_return), print_node)
         Rnode = Node(self.get_name(node.node_to_return), print_node)
         self.construct(node.node_to_return, Rnode)
 
@@ -66,11 +76,14 @@ class ParsePrinter:
 
     def construct_VarAssignNode(self, node, print_node):
         Node(str(node.var_name_token), print_node)
+        Node(str(node.equal_tok), print_node)
         expr = Node(self.get_name(node.expr_node), print_node)
         self.construct(node.expr_node, expr)
     
     def construct_VarDeclarationNode(self, node, print_node):
+        Node(str(node.keyword_var), print_node)
         Node(str(node.var_name_token), print_node)
+        Node(str(node.equal_tok), print_node)
         expr = Node(self.get_name(node.expr_node), print_node)
         self.construct(node.expr_node, expr)
 
@@ -80,9 +93,13 @@ class ParsePrinter:
         self.construct(node.node, p_node)
     
     def construct_StatementListNode(self, node, print_node):
+        if node.open_bracket:
+            Node(str(node.open_bracket), print_node)
         for n in node.list:
             p_node = Node(self.get_name(n), print_node)
             self.construct(n, p_node)
+        if node.close_bracket:
+            Node(str(node.close_bracket), print_node)
 
     def no_construct_method(self, node, print_node):
         raise Exception(f'No construct_{type(node).__name__} method defined')

@@ -1,7 +1,13 @@
-function sum(a, b) {
-   var sum = a + b + 1
-   return sum
+function factorial(n) {
+   if (n < 2)
+      return 1
+   var p = factorial(n - 1)
+   return p * n
 }
 
-var c = 1
-sum(1, c, sum(3, 4))
+var sample = 0
+
+if (sample == 0) 
+   factorial(3)
+else
+   factorial(5)

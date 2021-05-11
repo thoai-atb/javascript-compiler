@@ -30,6 +30,10 @@ factor
 atom
      (PLUS | MINUS) atom 
      IDENTIFIER LPAREN (expr (COMMA expr)*)? RPAREN                   # function call
-     INT | FLOAT | IDENTIFIER
+
+     =========================================================== TO DO
+     INT | FLOAT | STRING | IDENTIFIER
+     =========================================================== END TO DO
+
      LPAREN expr RPAREN
 

@@ -4,7 +4,9 @@ from .context import *
 from .symbol_table import *
 
 class RTResult:
-    def __init__ (self):
+    def __init__ (self, log_file, context):
+        self.log_file = log_file
+        self.context = context
         self.reset()
 
     def reset(self):
@@ -20,11 +22,15 @@ class RTResult:
     def success(self, value):
         self.reset()
         self.value = value
+        tabs = self.context.get_depth() * '\t'
+        self.log_file.write(f'\n{tabs}Passing Result: {value}')
         return self
 
     def success_return(self, value):
         self.reset()
         self.return_value = value
+        tabs = self.context.get_depth() * '\t'
+        self.log_file.write(f'\n{tabs}Returning Result: {value}')
         return self
 
     def failure(self, error):
@@ -52,12 +58,12 @@ class Interpreter:
     ####################################
 
     def visit_NumberNode(self, node, context):
-        return RTResult().success(
+        return RTResult(self.log_file, context).success(
             Number(node.token.value).set_context(context).set_pos(node.pos_start, node.pos_end)
         )
 
     def visit_VarAccessNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
         var_name = node.token.value
         value = context.symbol_table.get(var_name)
         if not value:
@@ -68,7 +74,7 @@ class Interpreter:
         return res.success(value)
 
     def visit_VarAssignNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
         var_name = node.var_name_token.value
         if not context.symbol_table.has(var_name):
             return res.failure(RTError(
@@ -80,7 +86,7 @@ class Interpreter:
         return res.success(value)
  
     def visit_VarDeclarationNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
         var_name = node.var_name_token.value
         if context.symbol_table.has_local(var_name):
             return res.failure(RTError(
@@ -92,7 +98,7 @@ class Interpreter:
         return res.success(value)
 
     def visit_IfElseNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
         expr_bool = res.register(self.visit(node.expr_node, context))
         if res.should_return(): return res
         if expr_bool.is_true():
@@ -104,7 +110,7 @@ class Interpreter:
         return res.success(result.set_pos(node.pos_start, node.pos_end))
     
     def visit_IfNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
         expr_bool = res.register(self.visit(node.expr_node, context))
         if res.should_return(): return res
         if expr_bool.is_true():
@@ -114,7 +120,7 @@ class Interpreter:
         return res.success(None)
 
     def visit_FuncDefNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
 
         func_name = node.var_name_tok.value if node.var_name_tok else None
         body_node = node.body_node
@@ -127,7 +133,7 @@ class Interpreter:
         return res.success(func_value)
 
     def visit_FuncCallNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
         args = []
 
         value_to_call = res.register(self.visit(node.node_to_call, context))
@@ -143,7 +149,10 @@ class Interpreter:
         return res.success(return_val)
 
     def execute_function(self, func, args):
-        res = RTResult()
+        tabs = func.context.get_depth() * '\t'
+        self.log_file.write(f'\n{tabs}Executing Function: {func}')
+
+        res = RTResult(self.log_file, func.context)
         new_context = Context(func.name, func.context, func.pos_start)
         new_context.symbol_table = SymbolTable(new_context.parent.symbol_table)
 
@@ -166,7 +175,7 @@ class Interpreter:
         return res.success(return_value)
 
     def visit_ReturnNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
         value = None
         if node.node_to_return:
             value = res.register(self.visit(node.node_to_return, context))
@@ -174,7 +183,7 @@ class Interpreter:
         return res.success_return(value)
 
     def visit_StatementListNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
         value = None
         for n in node.list:
             value = res.register(self.visit(n, context))
@@ -182,7 +191,7 @@ class Interpreter:
         return res.success(value)
        
     def visit_BinOpNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
         left = res.register(self.visit(node.left_node, context))
         if res.should_return(): return res
         right = res.register(self.visit(node.right_node, context))
@@ -190,6 +199,9 @@ class Interpreter:
 
         result = None
         error = None
+        
+        tabs = context.get_depth() * '\t'
+        self.log_file.write(f'\n{tabs}Executing Operation: {left} {node.token.type} {right}')
 
         if node.token.type == TT_PLUS:
             result, error = left.add(right)
@@ -222,7 +234,7 @@ class Interpreter:
         return res.success(result.set_pos(node.pos_start, node.pos_end))
 
     def visit_UnaryOpNode(self, node, context):
-        res = RTResult()
+        res = RTResult(self.log_file, context)
         number = res.register(self.visit(node.node, context))
         if res.should_return(): return res
 

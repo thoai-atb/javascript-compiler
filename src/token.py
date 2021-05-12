@@ -56,6 +56,8 @@ class Token:
     
     def __repr__ (self):
         if self.value:
+            if isinstance(self.value, str):
+                return f'{self.type}: {repr(self.value)}'
             return f'{self.type}: {self.value}'
         return f'{self.type}'
 

@@ -143,7 +143,7 @@ class Lexer:
         if(self.current_char == "'" and quote_type == "single") or (self.current_char == '"' and quote_type == "double"):
             self.advance()
             return(Token(TT_STRING,string,pos_start,self.pos.copy()),None)
-        return [], ExpectedCharError(pos_end, self.pos.copy(), "' expected at end the string" if quote_type == "single" else '" expected at end the string')
+        return [], ExpectedCharError(pos_end, self.pos.copy(), "' at the end of the string" if quote_type == "single" else '" at the end of the string')
         
 
     def make_identifier (self):

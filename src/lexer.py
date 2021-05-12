@@ -26,11 +26,13 @@ class Lexer:
                 tokens.append(self.make_number())
             elif self.current_char == '"' or self.current_char == "'":
                 if(self.current_char == "'"):
-                    tokens.append(self.make_string("single"))
+                    token, error = self.make_string("single")
+                    if error: return [], error
+                    tokens.append(token)
                 if(self.current_char == '"'):
-                    tokens.append(self.make_string("double"))
-            elif self.current_char == '/':
-                tokens.append(self.make_comment())
+                    token, error = self.make_string("double")
+                    if error: return [], error
+                    tokens.append(token)
             elif self.current_char == '+':
                 tokens.append(Token(TT_PLUS, pos_start=self.pos))
                 self.advance()
@@ -115,8 +117,8 @@ class Lexer:
         escape_characters = {
             'n': '\n',
             't': '\t',
-            '"' : "\"" if quote_type == "double" else None,
-            "'" : '\''if quote_type == "single" else None
+            '"' : "\"" if quote_type == "double" else '"',
+            "'" : '\''if quote_type == "single" else "'"
         }
 
         escape_character = False
@@ -140,37 +142,9 @@ class Lexer:
 
         if(self.current_char == "'" and quote_type == "single") or (self.current_char == '"' and quote_type == "double"):
             self.advance()
-            return(Token(TT_STRING,string,pos_start,self.pos.copy()))
+            return(Token(TT_STRING,string,pos_start,self.pos.copy()),None)
         return [], ExpectedCharError(pos_end, self.pos.copy(), "' expected at end the string" if quote_type == "single" else '" expected at end the string')
         
-    
-    def make_comment(self):
-        comment_str = ""
-        pos_start = self.pos.copy()
-        self.advance()
-        if(self.current_char == "/" or self.current_char =="*") :
-            if(self.current_char == "/"):
-                self.advance()
-                while(self.current_char != "\n" and self.current_char != None):
-                    comment_str += self.current_char
-                    self.advance()
-
-            elif(self.current_char == "*"):
-                self.advance()
-                end = False
-                while(end != True):
-                    if(self.current_char == "*"):
-                        temp_char = self.current_char
-                        self.advance()
-                        if(self.current_char == "/"):
-                            end = True
-                        else:
-                            comment_str += temp_char
-                    elif self.current_char != None:
-                        comment_str += self.current_char
-                        self.advance()
-        self.advance()
-        return Token(TT_COMMENT,comment_str,pos_start,self.pos.copy())
 
     def make_identifier (self):
         id_str = ''

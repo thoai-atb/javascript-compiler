@@ -29,7 +29,6 @@ def run(program_file_path, log_file_path):
     log_file.write(str(tokens))
     log_file.write('\n')
     log_file.write('\n')
-    print(str(tokens))
 
     # PARSING
     parser = Parser(tokens)

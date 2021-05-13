@@ -112,7 +112,8 @@ class Lexer:
     def make_string(self,quote_type):
         string = ""
         pos_start = self.pos.copy()
-        self.advance()
+        
+        self.advance()    
 
         escape_characters = {
             'n': '\n',
@@ -122,6 +123,7 @@ class Lexer:
         }
 
         escape_character = False
+        escape_character_count = 0
 
         while self.current_char != None and (((self.current_char != "'" and quote_type == "single") or (self.current_char != '"' and quote_type == "double")) or escape_character):
             if(escape_character):
@@ -135,15 +137,14 @@ class Lexer:
                     escape_character = True
                 else:
                     string += self.current_char
-
             self.advance()
-
-        pos_end = self.pos.copy()    
-
+            pos_end = self.pos.copy()
+        
         if(self.current_char == "'" and quote_type == "single") or (self.current_char == '"' and quote_type == "double"):
             self.advance()
             return(Token(TT_STRING,string,pos_start,self.pos.copy()),None)
-        return [], ExpectedCharError(pos_end, self.pos.copy(), "' at the end of the string" if quote_type == "single" else '" at the end of the string')
+        self.advance()
+        return [], ExpectedCharError(pos_end, self.pos.copy(), "' expected at end the string" if quote_type == "single" else '" expected at end the string')
         
 
     def make_identifier (self):

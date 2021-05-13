@@ -68,7 +68,7 @@ class ParsePrinter:
             self.construct(a, n)
         right_paren = Node(str(node.close_paren), print_node)
 
-    def construct_NumberNode(self, node, print_node):
+    def construct_ValueNode(self, node, print_node):
         Node(str(node.token), print_node)
 
     def construct_VarAccessNode(self, node, print_node):

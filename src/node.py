@@ -1,4 +1,4 @@
-class NumberNode:
+class ValueNode:
     def __init__ (self, token):
         self.token = token
         self.pos_start = token.pos_start

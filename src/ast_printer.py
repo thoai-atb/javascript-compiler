@@ -56,7 +56,7 @@ class ASTPrinter:
             n = Node(self.get_name(a), args)
             self.construct(a, n)
 
-    def construct_NumberNode(self, node, print_node):
+    def construct_ValueNode(self, node, print_node):
         Node(str(node.token), print_node)
 
     def construct_VarAccessNode(self, node, print_node):

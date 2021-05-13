@@ -95,10 +95,10 @@ class Parser:
             if res.error:
                 return res
             return res.success(UnaryOpNode(token, factor))
-        # Number:
-        elif token.type in (TT_INT, TT_FLOAT):
+        # Value:
+        elif token.type in (TT_INT, TT_FLOAT, TT_STRING):
             self.advance()
-            return res.success(NumberNode(token))
+            return res.success(ValueNode(token))
         # Identifier: variables and function call
         elif token.type in (TT_IDENTIFIER):
             self.advance()

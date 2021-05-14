@@ -38,7 +38,26 @@ class Function(Value):
 
     def __repr__ (self):
             return f"<function {self.name}>"
-        
+
+class String(Value):
+    def __init__ (self, value):
+        super().__init__(value)
+    
+    def copy(self):
+        return String(self.value).set_context(self.context).set_pos(self.pos_start, self.pos_start)
+
+    def add(self, other):
+        if isinstance(other, Value):
+            return String(self.value + str(other.value)).set_context(self.context), None
+
+    #################
+
+    def is_true(self):
+        return self.value != 0
+
+    def __repr__ (self):
+        return str(self.value)   
+
 class Number(Value):
     def __init__ (self, value):
         super().__init__(value)
@@ -49,6 +68,8 @@ class Number(Value):
     def add(self, other):
         if isinstance(other, Number):
             return Number(self.value + other.value).set_context(self.context), None # error
+        if isinstance(other, String):
+            return String(str(self.value) + other.value).set_context(self.context), None
     
     def sub(self, other):
         if isinstance(other, Number):

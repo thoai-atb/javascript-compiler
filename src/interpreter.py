@@ -57,10 +57,15 @@ class Interpreter:
     
     ####################################
 
-    def visit_NumberNode(self, node, context):
-        return RTResult(self.log_file, context).success(
-            Number(node.token.value).set_context(context).set_pos(node.pos_start, node.pos_end)
-        )
+    def visit_ValueNode(self, node, context):
+        if node.token.type == TT_INT:
+            return RTResult(self.log_file, context).success(
+                Number(node.token.value).set_context(context).set_pos(node.pos_start, node.pos_end)
+            )
+        if node.token.type == TT_STRING:
+            return RTResult(self.log_file, context).success(
+                String(node.token.value).set_context(context).set_pos(node.pos_start, node.pos_end)
+            )
 
     def visit_VarAccessNode(self, node, context):
         res = RTResult(self.log_file, context)

@@ -43,8 +43,11 @@ class Lexer:
                 tokens.append(Token(TT_MUL, pos_start=self.pos))
                 self.advance()
             elif self.current_char == '/':
-                tokens.append(Token(TT_DIV, pos_start=self.pos))
-                self.advance()
+                type,token = self.div_or_comment_who_knows()
+                if(type == "DIV"):
+                    tokens.append(token)
+                else:
+                    pass
             elif self.current_char == '^':
                 tokens.append(Token(TT_POWER, pos_start=self.pos))
                 self.advance()
@@ -123,7 +126,6 @@ class Lexer:
         }
 
         escape_character = False
-        escape_character_count = 0
 
         while self.current_char != None and (((self.current_char != "'" and quote_type == "single") or (self.current_char != '"' and quote_type == "double")) or escape_character):
             if(escape_character):
@@ -146,6 +148,35 @@ class Lexer:
         self.advance()
         return [], ExpectedCharError(pos_end, self.pos.copy(), "' expected at end the string" if quote_type == "single" else '" expected at end the string')
         
+    def div_or_comment_who_knows(self):
+        comment_str = ""
+        pos_start = self.pos.copy()
+        self.advance()
+        if(self.current_char == "/" or self.current_char =="*") :
+            if(self.current_char == "/"):
+                self.advance()
+                while(self.current_char != "\n" and self.current_char != None):
+                    comment_str += self.current_char
+                    self.advance()
+            elif(self.current_char == "*"):
+                self.advance()
+                end = False
+                while(end != True):
+                    if(self.current_char == "*"):
+                        temp_char = self.current_char
+                        self.advance()
+                        if(self.current_char == "/"):
+                            end = True
+                            self.advance()
+                        else:
+                            comment_str += temp_char
+                    elif self.current_char != None:
+                        comment_str += self.current_char
+                        self.advance()               
+        else:
+            return "DIV",Token(TT_DIV,pos_start = pos_start)
+
+        return "COMMENT",None
 
     def make_identifier (self):
         id_str = ''

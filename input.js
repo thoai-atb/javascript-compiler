@@ -1,8 +1,13 @@
-var str1 = "Hey Jude\n"
-var str2 = "Don't make it bad\n"
-var str3 = "Take a sad song\n"
-var str4 = "And make it better\n"
+var str1 = "In the name of God, the Gracious, the Merciful.\n"
+var str2 = "Perhaps those who disbelieve will wish they had been Muslims.\n"
+//Allah 
+var str3 = "So the angels prostrated themselves, all together.\n"
+// is
+var str4 = "Except for Satan. He refused to be among those who prostrated themselves.\n"
+//greatest
 var a = 3
-var str5 = "\nJesus takes the wheel"
-// var lyrics = str1 + str2 + str3 + str4 + a + str5
-var lyrics = str1 + str2
+/* NO
+   DOUBT
+*/
+var lyrics = str1 + str2 + str3 + str4 + a
+var bug = str1 - str2

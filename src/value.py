@@ -23,6 +23,48 @@ class Value:
             self.context
         )
 
+    def add(self, other):
+        return None, self.illegal_operation()
+    
+    def sub(self, other):
+        return None, self.illegal_operation()
+    
+    def mult(self, other):
+        return None, self.illegal_operation()
+    
+    def div(self, other):
+        return None, self.illegal_operation()
+    
+    def pow(self, other):
+        return None, self.illegal_operation()
+
+    def compare_ee(self, other):
+        return None, self.illegal_operation()
+
+    def compare_ne(self, other):
+        return None, self.illegal_operation()
+    
+    def compare_lt(self, other):
+        return None, self.illegal_operation()
+    
+    def compare_gt(self, other):
+        return None, self.illegal_operation()
+    
+    def compare_lte(self, other):
+        return None, self.illegal_operation()
+
+    def compare_gte(self, other):
+        return None, self.illegal_operation()
+
+    def bool_and(self, other):
+        return None, self.illegal_operation()
+    
+    def bool_or(self, other):
+        return None, self.illegal_operation()
+    
+    def bool_not(self):
+        return None, self.illegal_operation()
+
 class Function(Value):
     def __init__(self, name, body_node, arg_names):
         super().__init__()

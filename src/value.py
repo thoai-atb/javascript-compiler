@@ -1,5 +1,8 @@
 from .error import *
 
+def format_value(value):
+    return repr(str(value)) if isinstance(value, String) else value
+
 class Value:
     def __init__ (self, value=None):
         self.value = value
@@ -65,21 +68,32 @@ class Value:
     def bool_not(self):
         return None, self.illegal_operation()
 
+
 class Function(Value):
-    def __init__(self, name, body_node, arg_names):
+    def __init__(self, name):
         super().__init__()
         self.name = name or '<anonymous>'
+    
+    def parameter_count(self):
+        return -1
+
+    def __repr__ (self):
+        return f"<function {self.name}>"
+
+class UserFunction(Function):
+    def __init__(self, name, body_node, arg_names):
+        super().__init__(name)
         self.body_node = body_node
         self.arg_names = arg_names
+
+    def parameter_count(self):
+        return len(self.arg_names)
     
     def copy(self):
-        copy = Function(self.name, self.body_node, self.arg_names)
+        copy = UserFunction(self.name, self.body_node, self.arg_names)
         copy.set_context(self.context)
         copy.set_pos(self.pos_start, self.pos_end)
         return copy
-
-    def __repr__ (self):
-            return f"<function {self.name}>"
 
 class String(Value):
     def __init__ (self, value):

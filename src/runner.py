@@ -1,3 +1,4 @@
+from src.built_in_function import *
 from .lexer import *
 from .parser import *
 from .interpreter import *
@@ -8,13 +9,20 @@ from .ast_printer import *
 import codecs
 import math
 
-############################################################### RUN
+############################################################### SETTING UP GLOBAL SYMBOL TABLE
 
 global_symbol_table = SymbolTable()
 global_symbol_table.set_declar('NULL', Number(0))
 global_symbol_table.set_declar('TRUE', Number(1))
 global_symbol_table.set_declar('FALSE', Number(0))
 global_symbol_table.set_declar('PI', Number(math.pi))
+global_symbol_table.set_declar('log', LogFunction())
+global_symbol_table.set_declar('abs', AbsoluteFunction())
+global_symbol_table.set_declar('sin', SineFunction())
+global_symbol_table.set_declar('cos', CosineFunction())
+global_symbol_table.set_declar('sqrt', SquareRootFunction())
+
+############################################################### RUN
 
 def run(program_file_path, log_file_path):
     # OPEN LOG FILE

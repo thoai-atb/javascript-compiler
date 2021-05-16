@@ -1,3 +1,5 @@
+from .value import format_value
+
 class SymbolTable:
     def __init__ (self, parent=None):
         self.parent = parent
@@ -34,5 +36,5 @@ class SymbolTable:
     def __repr__(self):
         rep = ""
         for keys in self.symbols:
-            rep += f'\t{keys} : {self.symbols[keys]}\n'
+            rep += f'\t{keys} : {format_value(self.symbols[keys])}\n'
         return rep

@@ -1,13 +1,13 @@
-var str1 = "In the name of God, the Gracious, the Merciful.\n"
-var str2 = "Perhaps those who disbelieve will wish they had been Muslims.\n"
-//Allah 
-var str3 = "So the angels prostrated themselves, all together.\n"
-// is
-var str4 = "Except for Satan. He refused to be among those who prostrated themselves.\n"
-//greatest
-var a = 3
-/* NO
-   DOUBT
-*/
-var lyrics = str1 + str2 + str3 + str4 + a
-var bug = str1 - str2
+var side1 = 5
+var side2 = 12
+
+log("Side 1 is: " + side1)
+log("Side 2 is: " + side2)
+
+function findPythagorean(a, b) {
+    log("Finding pythagorean of " + a + " and " + b + " ... ")
+    return sqrt(a * a + b * b)
+}
+
+var side3 = findPythagorean(side1, side2)
+log("The result is: " + side3)

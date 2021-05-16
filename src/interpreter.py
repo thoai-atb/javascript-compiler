@@ -2,6 +2,7 @@ from .value import *
 from .token import *
 from .context import *
 from .symbol_table import *
+from src.built_in_function import BuiltInFunction
 
 class RTResult:
     def __init__ (self, log_file, context):
@@ -23,14 +24,14 @@ class RTResult:
         self.reset()
         self.value = value
         tabs = self.context.get_depth() * '\t'
-        self.log_file.write(f'\n{tabs}Passing Result: {value}')
+        self.log_file.write(f'\n{tabs}Passing Result: {format_value(value)}')
         return self
 
     def success_return(self, value):
         self.reset()
         self.return_value = value
         tabs = self.context.get_depth() * '\t'
-        self.log_file.write(f'\n{tabs}Returning Result: {value}')
+        self.log_file.write(f'\n{tabs}Returning Result: {format_value(value)}')
         return self
 
     def failure(self, error):
@@ -130,7 +131,7 @@ class Interpreter:
         func_name = node.var_name_tok.value if node.var_name_tok else None
         body_node = node.body_node
         arg_names = [arg_name.value for arg_name in node.arg_name_toks]
-        func_value = Function(func_name, body_node, arg_names).set_context(context).set_pos(node.pos_start, node.pos_end)
+        func_value = UserFunction(func_name, body_node, arg_names).set_context(context).set_pos(node.pos_start, node.pos_end)
 
         if node.var_name_tok:
             context.symbol_table.set_declar(func_name, func_value)
@@ -158,27 +159,37 @@ class Interpreter:
         self.log_file.write(f'\n{tabs}Executing Function: {func}')
 
         res = RTResult(self.log_file, func.context)
-        new_context = Context(func.name, func.context, func.pos_start)
-        func.context.children.append(new_context)
-        new_context.symbol_table = SymbolTable(new_context.parent.symbol_table)
 
-        if len(args) != len(func.arg_names):
+        if len(args) != func.parameter_count():
             return res.failure(RTError(
                 func.pos_start, func.pos_end,
-                f'Numbers of args do not match (expected {len(func.arg_names)} but found {len(args)})',
+                f'Numbers of args do not match (expected {func.parameter_count()} but found {len(args)})',
                 func.context
             ))
+        
+        # BUILT IN FUNCTIONS
+        if isinstance(func, BuiltInFunction):
+            try:
+                value = func.execute(args)
+            except Exception as e:
+                return res.failure(RTError(func.pos_start, func.pos_end, e, func.context))
+            return res.success(value)
+        # USER DEFINED FUNCTIONS
+        else:
+            new_context = Context(func.name, func.context, func.pos_start)
+            func.context.children.append(new_context)
+            new_context.symbol_table = SymbolTable(new_context.parent.symbol_table)
 
-        for i in range(len(args)):
-            arg_name = func.arg_names[i]
-            arg_value = args[i]
-            arg_value.set_context(new_context)
-            new_context.symbol_table.set_declar(arg_name, arg_value)
+            for i in range(len(args)):
+                arg_name = func.arg_names[i]
+                arg_value = args[i]
+                arg_value.set_context(new_context)
+                new_context.symbol_table.set_declar(arg_name, arg_value)
 
-        value = res.register(self.visit(func.body_node, new_context))
-        if res.should_return() and res.return_value == None: return res
-        return_value = res.return_value or value
-        return res.success(return_value)
+            value = res.register(self.visit(func.body_node, new_context))
+            if res.should_return() and res.return_value == None: return res
+            return_value = res.return_value or value
+            return res.success(return_value)
 
     def visit_ReturnNode(self, node, context):
         res = RTResult(self.log_file, context)
@@ -207,7 +218,7 @@ class Interpreter:
         error = None
         
         tabs = context.get_depth() * '\t'
-        self.log_file.write(f'\n{tabs}Executing Operation: {left} {node.token.type} {right}')
+        self.log_file.write(f'\n{tabs}Executing Operation: {format_value(left)} {node.token.type} {format_value(right)}')
 
         if node.token.type == TT_PLUS:
             result, error = left.add(right)

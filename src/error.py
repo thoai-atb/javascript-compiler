@@ -6,6 +6,11 @@ class Error:
         self.pos_end = pos_end
         self.name = name
         self.details = details
+
+    def set_pos(self, pos_start, pos_end):
+        self.pos_start = pos_start
+        self.pos_end = pos_end
+        return self
     
     def as_string (self):
         result =  f'{self.name}: {self.details}\n'

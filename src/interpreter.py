@@ -236,7 +236,7 @@ class Interpreter:
         elif node.token.type == TT_OR:
             result, error = left.bool_or(right)
         
-        if error: return res.failure(error)
+        if error: return res.failure(error.set_pos(node.token.pos_start, node.token.pos_end))
         return res.success(result.set_pos(node.pos_start, node.pos_end))
 
     def visit_UnaryOpNode(self, node, context):

@@ -43,7 +43,7 @@ class Lexer:
                 tokens.append(Token(TT_MUL, pos_start=self.pos))
                 self.advance()
             elif self.current_char == '/':
-                type,token = self.div_or_comment_who_knows()
+                type,token = self.make_div()
                 if(type == "DIV"):
                     tokens.append(token)
                 else:
@@ -148,7 +148,7 @@ class Lexer:
         self.advance()
         return [], ExpectedCharError(pos_end, self.pos.copy(), "' expected at end the string" if quote_type == "single" else '" expected at end the string')
         
-    def div_or_comment_who_knows(self):
+    def make_div(self):
         comment_str = ""
         pos_start = self.pos.copy()
         self.advance()

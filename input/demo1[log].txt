@@ -1,0 +1,292 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TOKEN LIST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+[EOL, EOL, EOL, KEYWORD: 'function', IDENTIFIER: 'findPythagorean', LPAREN, IDENTIFIER: 'a', COMMA, IDENTIFIER: 'b', RPAREN, LCURLY, EOL, IDENTIFIER: 'log', LPAREN, STRING: 'Finding pythagorean of ', PLUS, IDENTIFIER: 'a', PLUS, STRING: ' and ', PLUS, IDENTIFIER: 'b', PLUS, STRING: ' ... ', RPAREN, EOL, KEYWORD: 'return', IDENTIFIER: 'sqrt', LPAREN, IDENTIFIER: 'a', MUL, IDENTIFIER: 'a', PLUS, IDENTIFIER: 'b', MUL, IDENTIFIER: 'b', RPAREN, EOL, RCURLY, EOL, EOL, EOL, EOL, KEYWORD: 'function', IDENTIFIER: 'main', LPAREN, RPAREN, LCURLY, EOL, KEYWORD: 'var', IDENTIFIER: 'side3', EQUAL, IDENTIFIER: 'findPythagorean', LPAREN, INT: 5, COMMA, INT: 12, RPAREN, EOL, IDENTIFIER: 'log', LPAREN, STRING: 'The result is: ', PLUS, IDENTIFIER: 'side3', RPAREN, EOL, RCURLY, EOL, EOL, EOL, IDENTIFIER: 'main', LPAREN, RPAREN, EOL, EOL, EOL, EOF]
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ PARSE TREE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+ StatementListNode┐
+                  │           ┌KEYWORD: 'function'
+                  │           ├IDENTIFIER: 'findPythagorean'
+                  │           ├LPAREN
+                  │           │          ┌IDENTIFIER: 'a'
+                  │           ├Parameters┤
+                  │           │          └IDENTIFIER: 'b'
+                  │           ├RPAREN
+                  ├FuncDefNode┤
+                  │           │                 ┌LCURLY
+                  │           └StatementListNode┤
+                  │                             │            ┌IDENTIFIER: 'log'
+                  │                             │            ├LPAREN
+                  │                             ├FuncCallNode┤
+                  │                             │            ├Arguments┐
+                  │                             │            │         └BinOpNode┐
+                  │                             │            │                   ├BinOpNode┐
+                  │                             │            │                   │         ├BinOpNode┐
+                  │                             │            │                   │         │         │         ┌ValueNode┐
+                  │                             │            │                   │         │         │         │         └STRING: 'Finding pythagorean of '
+                  │                             │            │                   │         │         ├BinOpNode┤
+                  │                             │            │                   │         │         │         ├PLUS
+                  │                             │            │                   │         │         │         └VarAccessNode┐
+                  │                             │            │                   │         │         │                       └IDENTIFIER: 'a'
+                  │                             │            │                   │         │         ├PLUS
+                  │                             │            │                   │         │         └ValueNode┐
+                  │                             │            │                   │         │                   └STRING: ' and '
+                  │                             │            │                   │         ├PLUS
+                  │                             │            │                   │         └VarAccessNode┐
+                  │                             │            │                   │                       └IDENTIFIER: 'b'
+                  │                             │            │                   ├PLUS
+                  │                             │            │                   └ValueNode┐
+                  │                             │            │                             └STRING: ' ... '
+                  │                             │            └RPAREN
+                  │                             │          ┌KEYWORD: 'return'
+                  │                             ├ReturnNode┤
+                  │                             │          │            ┌IDENTIFIER: 'sqrt'
+                  │                             │          │            ├LPAREN
+                  │                             │          └FuncCallNode┤
+                  │                             │                       ├Arguments┐
+                  │                             │                       │         │                   ┌VarAccessNode┐
+                  │                             │                       │         │                   │             └IDENTIFIER: 'a'
+                  │                             │                       │         │         ┌BinOpNode┤
+                  │                             │                       │         │         │         ├MUL
+                  │                             │                       │         │         │         └VarAccessNode┐
+                  │                             │                       │         │         │                       └IDENTIFIER: 'a'
+                  │                             │                       │         └BinOpNode┤
+                  │                             │                       │                   ├PLUS
+                  │                             │                       │                   │         ┌VarAccessNode┐
+                  │                             │                       │                   │         │             └IDENTIFIER: 'b'
+                  │                             │                       │                   └BinOpNode┤
+                  │                             │                       │                             ├MUL
+                  │                             │                       │                             └VarAccessNode┐
+                  │                             │                       │                                           └IDENTIFIER: 'b'
+                  │                             │                       └RPAREN
+                  │                             └RCURLY
+                  │           ┌KEYWORD: 'function'
+                  │           ├IDENTIFIER: 'main'
+                  │           ├LPAREN
+                  │           ├Parameters
+                  │           ├RPAREN
+                  ├FuncDefNode┤
+                  │           │                 ┌LCURLY
+                  │           └StatementListNode┤
+                  │                             │                  ┌KEYWORD: 'var'
+                  │                             │                  ├IDENTIFIER: 'side3'
+                  │                             │                  ├EQUAL
+                  │                             ├VarDeclarationNode┤
+                  │                             │                  │            ┌IDENTIFIER: 'findPythagorean'
+                  │                             │                  │            ├LPAREN
+                  │                             │                  └FuncCallNode┤
+                  │                             │                               │         ┌ValueNode┐
+                  │                             │                               │         │         └INT: 5
+                  │                             │                               ├Arguments┤
+                  │                             │                               │         └ValueNode┐
+                  │                             │                               │                   └INT: 12
+                  │                             │                               └RPAREN
+                  │                             │            ┌IDENTIFIER: 'log'
+                  │                             │            ├LPAREN
+                  │                             ├FuncCallNode┤
+                  │                             │            ├Arguments┐
+                  │                             │            │         │         ┌ValueNode┐
+                  │                             │            │         │         │         └STRING: 'The result is: '
+                  │                             │            │         └BinOpNode┤
+                  │                             │            │                   ├PLUS
+                  │                             │            │                   └VarAccessNode┐
+                  │                             │            │                                 └IDENTIFIER: 'side3'
+                  │                             │            └RPAREN
+                  │                             └RCURLY
+                  │            ┌IDENTIFIER: 'main'
+                  │            ├LPAREN
+                  └FuncCallNode┤
+                               ├Arguments
+                               └RPAREN
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ABSTRACT SYNTAX TREE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+ StatementListNode┐
+                  │           ┌IDENTIFIER: 'findPythagorean'
+                  │           │          ┌IDENTIFIER: 'a'
+                  │           ├Parameters┤
+                  │           │          └IDENTIFIER: 'b'
+                  ├FuncDefNode┤
+                  │           └StatementListNode┐
+                  │                             │            ┌IDENTIFIER: 'log'
+                  │                             ├FuncCallNode┤
+                  │                             │            └Arguments┐
+                  │                             │                      └BinOpNode┐
+                  │                             │                                ├BinOpNode┐
+                  │                             │                                │         ├BinOpNode┐
+                  │                             │                                │         │         │         ┌ValueNode┐
+                  │                             │                                │         │         │         │         └STRING: 'Finding pythagorean of '
+                  │                             │                                │         │         ├BinOpNode┤
+                  │                             │                                │         │         │         ├PLUS
+                  │                             │                                │         │         │         └VarAccessNode┐
+                  │                             │                                │         │         │                       └IDENTIFIER: 'a'
+                  │                             │                                │         │         ├PLUS
+                  │                             │                                │         │         └ValueNode┐
+                  │                             │                                │         │                   └STRING: ' and '
+                  │                             │                                │         ├PLUS
+                  │                             │                                │         └VarAccessNode┐
+                  │                             │                                │                       └IDENTIFIER: 'b'
+                  │                             │                                ├PLUS
+                  │                             │                                └ValueNode┐
+                  │                             │                                          └STRING: ' ... '
+                  │                             └ReturnNode┐
+                  │                                        │            ┌IDENTIFIER: 'sqrt'
+                  │                                        └FuncCallNode┤
+                  │                                                     └Arguments┐
+                  │                                                               │                   ┌VarAccessNode┐
+                  │                                                               │                   │             └IDENTIFIER: 'a'
+                  │                                                               │         ┌BinOpNode┤
+                  │                                                               │         │         ├MUL
+                  │                                                               │         │         └VarAccessNode┐
+                  │                                                               │         │                       └IDENTIFIER: 'a'
+                  │                                                               └BinOpNode┤
+                  │                                                                         ├PLUS
+                  │                                                                         │         ┌VarAccessNode┐
+                  │                                                                         │         │             └IDENTIFIER: 'b'
+                  │                                                                         └BinOpNode┤
+                  │                                                                                   ├MUL
+                  │                                                                                   └VarAccessNode┐
+                  │                                                                                                 └IDENTIFIER: 'b'
+                  │           ┌IDENTIFIER: 'main'
+                  │           ├Parameters
+                  ├FuncDefNode┤
+                  │           │                                    ┌IDENTIFIER: 'side3'
+                  │           │                 ┌VarDeclarationNode┤
+                  │           │                 │                  │            ┌IDENTIFIER: 'findPythagorean'
+                  │           │                 │                  └FuncCallNode┤
+                  │           │                 │                               │         ┌ValueNode┐
+                  │           │                 │                               │         │         └INT: 5
+                  │           │                 │                               └Arguments┤
+                  │           │                 │                                         └ValueNode┐
+                  │           │                 │                                                   └INT: 12
+                  │           └StatementListNode┤
+                  │                             │            ┌IDENTIFIER: 'log'
+                  │                             └FuncCallNode┤
+                  │                                          └Arguments┐
+                  │                                                    │         ┌ValueNode┐
+                  │                                                    │         │         └STRING: 'The result is: '
+                  │                                                    └BinOpNode┤
+                  │                                                              ├PLUS
+                  │                                                              └VarAccessNode┐
+                  │                                                                            └IDENTIFIER: 'side3'
+                  │            ┌IDENTIFIER: 'main'
+                  └FuncCallNode┤
+                               └Arguments
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ EXECUTION PROCESS @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Visit StatementListNode: [FUNCTION <IDENTIFIER: 'findPythagorean'> ([IDENTIFIER: 'a', IDENTIFIER: 'b']) -> [CALL: IDENTIFIER: 'log' ([((((STRING: 'Finding pythagorean of ', PLUS, IDENTIFIER: 'a'), PLUS, STRING: ' and '), PLUS, IDENTIFIER: 'b'), PLUS, STRING: ' ... ')]), RETURN(CALL: IDENTIFIER: 'sqrt' ([((IDENTIFIER: 'a', MUL, IDENTIFIER: 'a'), PLUS, (IDENTIFIER: 'b', MUL, IDENTIFIER: 'b'))]))], FUNCTION <IDENTIFIER: 'main'> ([]) -> [IDENTIFIER: 'side3' = (CALL: IDENTIFIER: 'findPythagorean' ([INT: 5, INT: 12])), CALL: IDENTIFIER: 'log' ([(STRING: 'The result is: ', PLUS, IDENTIFIER: 'side3')])], CALL: IDENTIFIER: 'main' ([])]
+Visit FuncDefNode: FUNCTION <IDENTIFIER: 'findPythagorean'> ([IDENTIFIER: 'a', IDENTIFIER: 'b']) -> [CALL: IDENTIFIER: 'log' ([((((STRING: 'Finding pythagorean of ', PLUS, IDENTIFIER: 'a'), PLUS, STRING: ' and '), PLUS, IDENTIFIER: 'b'), PLUS, STRING: ' ... ')]), RETURN(CALL: IDENTIFIER: 'sqrt' ([((IDENTIFIER: 'a', MUL, IDENTIFIER: 'a'), PLUS, (IDENTIFIER: 'b', MUL, IDENTIFIER: 'b'))]))]
+Passing Result: <function findPythagorean>
+Visit FuncDefNode: FUNCTION <IDENTIFIER: 'main'> ([]) -> [IDENTIFIER: 'side3' = (CALL: IDENTIFIER: 'findPythagorean' ([INT: 5, INT: 12])), CALL: IDENTIFIER: 'log' ([(STRING: 'The result is: ', PLUS, IDENTIFIER: 'side3')])]
+Passing Result: <function main>
+Visit FuncCallNode: CALL: IDENTIFIER: 'main' ([])
+Visit VarAccessNode: IDENTIFIER: 'main'
+Passing Result: <function main>
+Executing Function: <function main>
+	Visit StatementListNode: [IDENTIFIER: 'side3' = (CALL: IDENTIFIER: 'findPythagorean' ([INT: 5, INT: 12])), CALL: IDENTIFIER: 'log' ([(STRING: 'The result is: ', PLUS, IDENTIFIER: 'side3')])]
+	Visit VarDeclarationNode: IDENTIFIER: 'side3' = (CALL: IDENTIFIER: 'findPythagorean' ([INT: 5, INT: 12]))
+	Visit FuncCallNode: CALL: IDENTIFIER: 'findPythagorean' ([INT: 5, INT: 12])
+	Visit VarAccessNode: IDENTIFIER: 'findPythagorean'
+	Passing Result: <function findPythagorean>
+	Visit ValueNode: INT: 5
+	Passing Result: 5
+	Visit ValueNode: INT: 12
+	Passing Result: 12
+	Executing Function: <function findPythagorean>
+		Visit StatementListNode: [CALL: IDENTIFIER: 'log' ([((((STRING: 'Finding pythagorean of ', PLUS, IDENTIFIER: 'a'), PLUS, STRING: ' and '), PLUS, IDENTIFIER: 'b'), PLUS, STRING: ' ... ')]), RETURN(CALL: IDENTIFIER: 'sqrt' ([((IDENTIFIER: 'a', MUL, IDENTIFIER: 'a'), PLUS, (IDENTIFIER: 'b', MUL, IDENTIFIER: 'b'))]))]
+		Visit FuncCallNode: CALL: IDENTIFIER: 'log' ([((((STRING: 'Finding pythagorean of ', PLUS, IDENTIFIER: 'a'), PLUS, STRING: ' and '), PLUS, IDENTIFIER: 'b'), PLUS, STRING: ' ... ')])
+		Visit VarAccessNode: IDENTIFIER: 'log'
+		Passing Result: <function log>
+		Visit BinOpNode: ((((STRING: 'Finding pythagorean of ', PLUS, IDENTIFIER: 'a'), PLUS, STRING: ' and '), PLUS, IDENTIFIER: 'b'), PLUS, STRING: ' ... ')
+		Visit BinOpNode: (((STRING: 'Finding pythagorean of ', PLUS, IDENTIFIER: 'a'), PLUS, STRING: ' and '), PLUS, IDENTIFIER: 'b')
+		Visit BinOpNode: ((STRING: 'Finding pythagorean of ', PLUS, IDENTIFIER: 'a'), PLUS, STRING: ' and ')
+		Visit BinOpNode: (STRING: 'Finding pythagorean of ', PLUS, IDENTIFIER: 'a')
+		Visit ValueNode: STRING: 'Finding pythagorean of '
+		Passing Result: 'Finding pythagorean of '
+		Visit VarAccessNode: IDENTIFIER: 'a'
+		Passing Result: 5
+		Executing Operation: 'Finding pythagorean of ' PLUS 5
+		Passing Result: 'Finding pythagorean of 5'
+		Visit ValueNode: STRING: ' and '
+		Passing Result: ' and '
+		Executing Operation: 'Finding pythagorean of 5' PLUS ' and '
+		Passing Result: 'Finding pythagorean of 5 and '
+		Visit VarAccessNode: IDENTIFIER: 'b'
+		Passing Result: 12
+		Executing Operation: 'Finding pythagorean of 5 and ' PLUS 12
+		Passing Result: 'Finding pythagorean of 5 and 12'
+		Visit ValueNode: STRING: ' ... '
+		Passing Result: ' ... '
+		Executing Operation: 'Finding pythagorean of 5 and 12' PLUS ' ... '
+		Passing Result: 'Finding pythagorean of 5 and 12 ... '
+		Executing Function: <function log>
+		Passing Result: None
+		Passing Result: None
+		Visit ReturnNode: RETURN(CALL: IDENTIFIER: 'sqrt' ([((IDENTIFIER: 'a', MUL, IDENTIFIER: 'a'), PLUS, (IDENTIFIER: 'b', MUL, IDENTIFIER: 'b'))]))
+		Visit FuncCallNode: CALL: IDENTIFIER: 'sqrt' ([((IDENTIFIER: 'a', MUL, IDENTIFIER: 'a'), PLUS, (IDENTIFIER: 'b', MUL, IDENTIFIER: 'b'))])
+		Visit VarAccessNode: IDENTIFIER: 'sqrt'
+		Passing Result: <function sqrt>
+		Visit BinOpNode: ((IDENTIFIER: 'a', MUL, IDENTIFIER: 'a'), PLUS, (IDENTIFIER: 'b', MUL, IDENTIFIER: 'b'))
+		Visit BinOpNode: (IDENTIFIER: 'a', MUL, IDENTIFIER: 'a')
+		Visit VarAccessNode: IDENTIFIER: 'a'
+		Passing Result: 5
+		Visit VarAccessNode: IDENTIFIER: 'a'
+		Passing Result: 5
+		Executing Operation: 5 MUL 5
+		Passing Result: 25
+		Visit BinOpNode: (IDENTIFIER: 'b', MUL, IDENTIFIER: 'b')
+		Visit VarAccessNode: IDENTIFIER: 'b'
+		Passing Result: 12
+		Visit VarAccessNode: IDENTIFIER: 'b'
+		Passing Result: 12
+		Executing Operation: 12 MUL 12
+		Passing Result: 144
+		Executing Operation: 25 PLUS 144
+		Passing Result: 169
+		Executing Function: <function sqrt>
+		Passing Result: 13.0
+		Passing Result: 13.0
+		Returning Result: 13.0
+	Passing Result: 13.0
+	Passing Result: 13.0
+	Passing Result: 13.0
+	Visit FuncCallNode: CALL: IDENTIFIER: 'log' ([(STRING: 'The result is: ', PLUS, IDENTIFIER: 'side3')])
+	Visit VarAccessNode: IDENTIFIER: 'log'
+	Passing Result: <function log>
+	Visit BinOpNode: (STRING: 'The result is: ', PLUS, IDENTIFIER: 'side3')
+	Visit ValueNode: STRING: 'The result is: '
+	Passing Result: 'The result is: '
+	Visit VarAccessNode: IDENTIFIER: 'side3'
+	Passing Result: 13.0
+	Executing Operation: 'The result is: ' PLUS 13.0
+	Passing Result: 'The result is: 13.0'
+	Executing Function: <function log>
+	Passing Result: None
+	Passing Result: None
+	Passing Result: None
+Passing Result: None
+Passing Result: None
+Passing Result: None
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ SYMBOL TABLES @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Symbol Table for Context[name = <program>, depth = 0]:
+	NULL : 0
+	TRUE : 1
+	FALSE : 0
+	PI : 3.141592653589793
+	log : <function log>
+	abs : <function abs>
+	sin : <function sin>
+	cos : <function cos>
+	sqrt : <function sqrt>
+	findPythagorean : <function findPythagorean>
+	main : <function main>
+
+Symbol Table for Context[name = main, depth = 1]:
+	side3 : 13.0
+
+Symbol Table for Context[name = findPythagorean, depth = 2]:
+	a : 5
+	b : 12

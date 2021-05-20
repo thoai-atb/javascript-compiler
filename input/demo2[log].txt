@@ -1,0 +1,325 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TOKEN LIST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+[KEYWORD: 'function', IDENTIFIER: 'factorial', LPAREN, IDENTIFIER: 'n', RPAREN, LCURLY, EOL, KEYWORD: 'if', LPAREN, IDENTIFIER: 'n', LT, INT: 2, RPAREN, KEYWORD: 'return', INT: 1, EOL, KEYWORD: 'var', IDENTIFIER: 'n_1', EQUAL, IDENTIFIER: 'factorial', LPAREN, IDENTIFIER: 'n', MINUS, INT: 1, RPAREN, EOL, KEYWORD: 'return', IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1', EOL, RCURLY, EOL, EOL, KEYWORD: 'function', IDENTIFIER: 'main', LPAREN, RPAREN, LCURLY, EOL, KEYWORD: 'var', IDENTIFIER: 'a', EQUAL, IDENTIFIER: 'factorial', LPAREN, INT: 4, RPAREN, EOL, IDENTIFIER: 'log', LPAREN, IDENTIFIER: 'a', RPAREN, EOL, RCURLY, EOL, EOL, IDENTIFIER: 'main', LPAREN, RPAREN, EOF]
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ PARSE TREE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+ StatementListNode┐
+                  │           ┌KEYWORD: 'function'
+                  │           ├IDENTIFIER: 'factorial'
+                  │           ├LPAREN
+                  │           ├Parameters┐
+                  │           │          └IDENTIFIER: 'n'
+                  │           ├RPAREN
+                  ├FuncDefNode┤
+                  │           │                 ┌LCURLY
+                  │           │                 │      ┌KEYWORD: 'if'
+                  │           │                 │      ├LPAREN
+                  │           │                 ├IfNode┤
+                  │           │                 │      │         ┌VarAccessNode┐
+                  │           │                 │      │         │             └IDENTIFIER: 'n'
+                  │           │                 │      ├BinOpNode┤
+                  │           │                 │      │         ├LT
+                  │           │                 │      │         └ValueNode┐
+                  │           │                 │      │                   └INT: 2
+                  │           │                 │      ├RPAREN
+                  │           │                 │      │          ┌KEYWORD: 'return'
+                  │           │                 │      └ReturnNode┤
+                  │           │                 │                 └ValueNode┐
+                  │           │                 │                           └INT: 1
+                  │           └StatementListNode┤
+                  │                             │                  ┌KEYWORD: 'var'
+                  │                             │                  ├IDENTIFIER: 'n_1'
+                  │                             │                  ├EQUAL
+                  │                             ├VarDeclarationNode┤
+                  │                             │                  │            ┌IDENTIFIER: 'factorial'
+                  │                             │                  │            ├LPAREN
+                  │                             │                  └FuncCallNode┤
+                  │                             │                               ├Arguments┐
+                  │                             │                               │         │         ┌VarAccessNode┐
+                  │                             │                               │         │         │             └IDENTIFIER: 'n'
+                  │                             │                               │         └BinOpNode┤
+                  │                             │                               │                   ├MINUS
+                  │                             │                               │                   └ValueNode┐
+                  │                             │                               │                             └INT: 1
+                  │                             │                               └RPAREN
+                  │                             │          ┌KEYWORD: 'return'
+                  │                             ├ReturnNode┤
+                  │                             │          │         ┌VarAccessNode┐
+                  │                             │          │         │             └IDENTIFIER: 'n'
+                  │                             │          └BinOpNode┤
+                  │                             │                    ├MUL
+                  │                             │                    └VarAccessNode┐
+                  │                             │                                  └IDENTIFIER: 'n_1'
+                  │                             └RCURLY
+                  │           ┌KEYWORD: 'function'
+                  │           ├IDENTIFIER: 'main'
+                  │           ├LPAREN
+                  │           ├Parameters
+                  │           ├RPAREN
+                  ├FuncDefNode┤
+                  │           │                 ┌LCURLY
+                  │           └StatementListNode┤
+                  │                             │                  ┌KEYWORD: 'var'
+                  │                             │                  ├IDENTIFIER: 'a'
+                  │                             │                  ├EQUAL
+                  │                             ├VarDeclarationNode┤
+                  │                             │                  │            ┌IDENTIFIER: 'factorial'
+                  │                             │                  │            ├LPAREN
+                  │                             │                  └FuncCallNode┤
+                  │                             │                               ├Arguments┐
+                  │                             │                               │         └ValueNode┐
+                  │                             │                               │                   └INT: 4
+                  │                             │                               └RPAREN
+                  │                             │            ┌IDENTIFIER: 'log'
+                  │                             │            ├LPAREN
+                  │                             ├FuncCallNode┤
+                  │                             │            ├Arguments┐
+                  │                             │            │         └VarAccessNode┐
+                  │                             │            │                       └IDENTIFIER: 'a'
+                  │                             │            └RPAREN
+                  │                             └RCURLY
+                  │            ┌IDENTIFIER: 'main'
+                  │            ├LPAREN
+                  └FuncCallNode┤
+                               ├Arguments
+                               └RPAREN
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ABSTRACT SYNTAX TREE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+ StatementListNode┐
+                  │           ┌IDENTIFIER: 'factorial'
+                  │           ├Parameters┐
+                  │           │          └IDENTIFIER: 'n'
+                  ├FuncDefNode┤
+                  │           │                 ┌IfNode┐
+                  │           │                 │      │         ┌VarAccessNode┐
+                  │           │                 │      │         │             └IDENTIFIER: 'n'
+                  │           │                 │      ├BinOpNode┤
+                  │           │                 │      │         ├LT
+                  │           │                 │      │         └ValueNode┐
+                  │           │                 │      │                   └INT: 2
+                  │           │                 │      └ReturnNode┐
+                  │           │                 │                 └ValueNode┐
+                  │           │                 │                           └INT: 1
+                  │           └StatementListNode┤
+                  │                             │                  ┌IDENTIFIER: 'n_1'
+                  │                             ├VarDeclarationNode┤
+                  │                             │                  │            ┌IDENTIFIER: 'factorial'
+                  │                             │                  └FuncCallNode┤
+                  │                             │                               └Arguments┐
+                  │                             │                                         │         ┌VarAccessNode┐
+                  │                             │                                         │         │             └IDENTIFIER: 'n'
+                  │                             │                                         └BinOpNode┤
+                  │                             │                                                   ├MINUS
+                  │                             │                                                   └ValueNode┐
+                  │                             │                                                             └INT: 1
+                  │                             └ReturnNode┐
+                  │                                        │         ┌VarAccessNode┐
+                  │                                        │         │             └IDENTIFIER: 'n'
+                  │                                        └BinOpNode┤
+                  │                                                  ├MUL
+                  │                                                  └VarAccessNode┐
+                  │                                                                └IDENTIFIER: 'n_1'
+                  │           ┌IDENTIFIER: 'main'
+                  │           ├Parameters
+                  ├FuncDefNode┤
+                  │           └StatementListNode┐
+                  │                             │                  ┌IDENTIFIER: 'a'
+                  │                             ├VarDeclarationNode┤
+                  │                             │                  │            ┌IDENTIFIER: 'factorial'
+                  │                             │                  └FuncCallNode┤
+                  │                             │                               └Arguments┐
+                  │                             │                                         └ValueNode┐
+                  │                             │                                                   └INT: 4
+                  │                             │            ┌IDENTIFIER: 'log'
+                  │                             └FuncCallNode┤
+                  │                                          └Arguments┐
+                  │                                                    └VarAccessNode┐
+                  │                                                                  └IDENTIFIER: 'a'
+                  │            ┌IDENTIFIER: 'main'
+                  └FuncCallNode┤
+                               └Arguments
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ EXECUTION PROCESS @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Visit StatementListNode: [FUNCTION <IDENTIFIER: 'factorial'> ([IDENTIFIER: 'n']) -> [IF((IDENTIFIER: 'n', LT, INT: 2), RETURN(INT: 1)), IDENTIFIER: 'n_1' = (CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)])), RETURN((IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1'))], FUNCTION <IDENTIFIER: 'main'> ([]) -> [IDENTIFIER: 'a' = (CALL: IDENTIFIER: 'factorial' ([INT: 4])), CALL: IDENTIFIER: 'log' ([IDENTIFIER: 'a'])], CALL: IDENTIFIER: 'main' ([])]
+Visit FuncDefNode: FUNCTION <IDENTIFIER: 'factorial'> ([IDENTIFIER: 'n']) -> [IF((IDENTIFIER: 'n', LT, INT: 2), RETURN(INT: 1)), IDENTIFIER: 'n_1' = (CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)])), RETURN((IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1'))]
+Passing Result: <function factorial>
+Visit FuncDefNode: FUNCTION <IDENTIFIER: 'main'> ([]) -> [IDENTIFIER: 'a' = (CALL: IDENTIFIER: 'factorial' ([INT: 4])), CALL: IDENTIFIER: 'log' ([IDENTIFIER: 'a'])]
+Passing Result: <function main>
+Visit FuncCallNode: CALL: IDENTIFIER: 'main' ([])
+Visit VarAccessNode: IDENTIFIER: 'main'
+Passing Result: <function main>
+Executing Function: <function main>
+	Visit StatementListNode: [IDENTIFIER: 'a' = (CALL: IDENTIFIER: 'factorial' ([INT: 4])), CALL: IDENTIFIER: 'log' ([IDENTIFIER: 'a'])]
+	Visit VarDeclarationNode: IDENTIFIER: 'a' = (CALL: IDENTIFIER: 'factorial' ([INT: 4]))
+	Visit FuncCallNode: CALL: IDENTIFIER: 'factorial' ([INT: 4])
+	Visit VarAccessNode: IDENTIFIER: 'factorial'
+	Passing Result: <function factorial>
+	Visit ValueNode: INT: 4
+	Passing Result: 4
+	Executing Function: <function factorial>
+		Visit StatementListNode: [IF((IDENTIFIER: 'n', LT, INT: 2), RETURN(INT: 1)), IDENTIFIER: 'n_1' = (CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)])), RETURN((IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1'))]
+		Visit IfNode: IF((IDENTIFIER: 'n', LT, INT: 2), RETURN(INT: 1))
+		Visit BinOpNode: (IDENTIFIER: 'n', LT, INT: 2)
+		Visit VarAccessNode: IDENTIFIER: 'n'
+		Passing Result: 4
+		Visit ValueNode: INT: 2
+		Passing Result: 2
+		Executing Operation: 4 LT 2
+		Passing Result: 0
+		Passing Result: None
+		Visit VarDeclarationNode: IDENTIFIER: 'n_1' = (CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)]))
+		Visit FuncCallNode: CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)])
+		Visit VarAccessNode: IDENTIFIER: 'factorial'
+		Passing Result: <function factorial>
+		Visit BinOpNode: (IDENTIFIER: 'n', MINUS, INT: 1)
+		Visit VarAccessNode: IDENTIFIER: 'n'
+		Passing Result: 4
+		Visit ValueNode: INT: 1
+		Passing Result: 1
+		Executing Operation: 4 MINUS 1
+		Passing Result: 3
+		Executing Function: <function factorial>
+			Visit StatementListNode: [IF((IDENTIFIER: 'n', LT, INT: 2), RETURN(INT: 1)), IDENTIFIER: 'n_1' = (CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)])), RETURN((IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1'))]
+			Visit IfNode: IF((IDENTIFIER: 'n', LT, INT: 2), RETURN(INT: 1))
+			Visit BinOpNode: (IDENTIFIER: 'n', LT, INT: 2)
+			Visit VarAccessNode: IDENTIFIER: 'n'
+			Passing Result: 3
+			Visit ValueNode: INT: 2
+			Passing Result: 2
+			Executing Operation: 3 LT 2
+			Passing Result: 0
+			Passing Result: None
+			Visit VarDeclarationNode: IDENTIFIER: 'n_1' = (CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)]))
+			Visit FuncCallNode: CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)])
+			Visit VarAccessNode: IDENTIFIER: 'factorial'
+			Passing Result: <function factorial>
+			Visit BinOpNode: (IDENTIFIER: 'n', MINUS, INT: 1)
+			Visit VarAccessNode: IDENTIFIER: 'n'
+			Passing Result: 3
+			Visit ValueNode: INT: 1
+			Passing Result: 1
+			Executing Operation: 3 MINUS 1
+			Passing Result: 2
+			Executing Function: <function factorial>
+				Visit StatementListNode: [IF((IDENTIFIER: 'n', LT, INT: 2), RETURN(INT: 1)), IDENTIFIER: 'n_1' = (CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)])), RETURN((IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1'))]
+				Visit IfNode: IF((IDENTIFIER: 'n', LT, INT: 2), RETURN(INT: 1))
+				Visit BinOpNode: (IDENTIFIER: 'n', LT, INT: 2)
+				Visit VarAccessNode: IDENTIFIER: 'n'
+				Passing Result: 2
+				Visit ValueNode: INT: 2
+				Passing Result: 2
+				Executing Operation: 2 LT 2
+				Passing Result: 0
+				Passing Result: None
+				Visit VarDeclarationNode: IDENTIFIER: 'n_1' = (CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)]))
+				Visit FuncCallNode: CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)])
+				Visit VarAccessNode: IDENTIFIER: 'factorial'
+				Passing Result: <function factorial>
+				Visit BinOpNode: (IDENTIFIER: 'n', MINUS, INT: 1)
+				Visit VarAccessNode: IDENTIFIER: 'n'
+				Passing Result: 2
+				Visit ValueNode: INT: 1
+				Passing Result: 1
+				Executing Operation: 2 MINUS 1
+				Passing Result: 1
+				Executing Function: <function factorial>
+					Visit StatementListNode: [IF((IDENTIFIER: 'n', LT, INT: 2), RETURN(INT: 1)), IDENTIFIER: 'n_1' = (CALL: IDENTIFIER: 'factorial' ([(IDENTIFIER: 'n', MINUS, INT: 1)])), RETURN((IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1'))]
+					Visit IfNode: IF((IDENTIFIER: 'n', LT, INT: 2), RETURN(INT: 1))
+					Visit BinOpNode: (IDENTIFIER: 'n', LT, INT: 2)
+					Visit VarAccessNode: IDENTIFIER: 'n'
+					Passing Result: 1
+					Visit ValueNode: INT: 2
+					Passing Result: 2
+					Executing Operation: 1 LT 2
+					Passing Result: 1
+					Visit ReturnNode: RETURN(INT: 1)
+					Visit ValueNode: INT: 1
+					Passing Result: 1
+					Returning Result: 1
+				Passing Result: 1
+				Passing Result: 1
+				Passing Result: 1
+				Visit ReturnNode: RETURN((IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1'))
+				Visit BinOpNode: (IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1')
+				Visit VarAccessNode: IDENTIFIER: 'n'
+				Passing Result: 2
+				Visit VarAccessNode: IDENTIFIER: 'n_1'
+				Passing Result: 1
+				Executing Operation: 2 MUL 1
+				Passing Result: 2
+				Returning Result: 2
+			Passing Result: 2
+			Passing Result: 2
+			Passing Result: 2
+			Visit ReturnNode: RETURN((IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1'))
+			Visit BinOpNode: (IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1')
+			Visit VarAccessNode: IDENTIFIER: 'n'
+			Passing Result: 3
+			Visit VarAccessNode: IDENTIFIER: 'n_1'
+			Passing Result: 2
+			Executing Operation: 3 MUL 2
+			Passing Result: 6
+			Returning Result: 6
+		Passing Result: 6
+		Passing Result: 6
+		Passing Result: 6
+		Visit ReturnNode: RETURN((IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1'))
+		Visit BinOpNode: (IDENTIFIER: 'n', MUL, IDENTIFIER: 'n_1')
+		Visit VarAccessNode: IDENTIFIER: 'n'
+		Passing Result: 4
+		Visit VarAccessNode: IDENTIFIER: 'n_1'
+		Passing Result: 6
+		Executing Operation: 4 MUL 6
+		Passing Result: 24
+		Returning Result: 24
+	Passing Result: 24
+	Passing Result: 24
+	Passing Result: 24
+	Visit FuncCallNode: CALL: IDENTIFIER: 'log' ([IDENTIFIER: 'a'])
+	Visit VarAccessNode: IDENTIFIER: 'log'
+	Passing Result: <function log>
+	Visit VarAccessNode: IDENTIFIER: 'a'
+	Passing Result: 24
+	Executing Function: <function log>
+	Passing Result: None
+	Passing Result: None
+	Passing Result: None
+Passing Result: None
+Passing Result: None
+Passing Result: None
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ SYMBOL TABLES @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Symbol Table for Context[name = <program>, depth = 0]:
+	NULL : 0
+	TRUE : 1
+	FALSE : 0
+	PI : 3.141592653589793
+	log : <function log>
+	abs : <function abs>
+	sin : <function sin>
+	cos : <function cos>
+	sqrt : <function sqrt>
+	factorial : <function factorial>
+	main : <function main>
+
+Symbol Table for Context[name = main, depth = 1]:
+	a : 24
+
+Symbol Table for Context[name = factorial, depth = 2]:
+	n : 4
+	n_1 : 6
+
+Symbol Table for Context[name = factorial, depth = 3]:
+	n : 3
+	n_1 : 2
+
+Symbol Table for Context[name = factorial, depth = 4]:
+	n : 2
+	n_1 : 1
+
+Symbol Table for Context[name = factorial, depth = 5]:
+	n : 1

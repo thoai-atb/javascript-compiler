@@ -1,0 +1,149 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TOKEN LIST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+[EOL, KEYWORD: 'var', IDENTIFIER: 'number', EQUAL, INT: 10, EOL, EOL, KEYWORD: 'function', IDENTIFIER: 'dosomethingsilly', LPAREN, RPAREN, LCURLY, EOL, IDENTIFIER: 'number', EQUAL, IDENTIFIER: 'number', PLUS, INT: 1, EOL, EOL, IDENTIFIER: 'numbr', EQUAL, IDENTIFIER: 'number', MUL, INT: 2, EOL, RCURLY, EOL, EOL, KEYWORD: 'function', IDENTIFIER: 'main', LPAREN, RPAREN, LCURLY, EOL, IDENTIFIER: 'dosomethingsilly', LPAREN, RPAREN, EOL, RCURLY, EOL, EOL, IDENTIFIER: 'main', LPAREN, RPAREN, EOL, EOF]
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ PARSE TREE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+                                     ┌KEYWORD: 'var'
+                                     ├IDENTIFIER: 'number'
+                  ┌VarDeclarationNode┤
+                  │                  ├EQUAL
+                  │                  └ValueNode┐
+                  │                            └INT: 10
+ StatementListNode┤
+                  │           ┌KEYWORD: 'function'
+                  │           ├IDENTIFIER: 'dosomethingsilly'
+                  │           ├LPAREN
+                  │           ├Parameters
+                  │           ├RPAREN
+                  ├FuncDefNode┤
+                  │           │                 ┌LCURLY
+                  │           │                 │             ┌IDENTIFIER: 'number'
+                  │           │                 │             ├EQUAL
+                  │           │                 ├VarAssignNode┤
+                  │           │                 │             │         ┌VarAccessNode┐
+                  │           │                 │             │         │             └IDENTIFIER: 'number'
+                  │           │                 │             └BinOpNode┤
+                  │           │                 │                       ├PLUS
+                  │           │                 │                       └ValueNode┐
+                  │           │                 │                                 └INT: 1
+                  │           └StatementListNode┤
+                  │                             │             ┌IDENTIFIER: 'numbr'
+                  │                             │             ├EQUAL
+                  │                             ├VarAssignNode┤
+                  │                             │             │         ┌VarAccessNode┐
+                  │                             │             │         │             └IDENTIFIER: 'number'
+                  │                             │             └BinOpNode┤
+                  │                             │                       ├MUL
+                  │                             │                       └ValueNode┐
+                  │                             │                                 └INT: 2
+                  │                             └RCURLY
+                  │           ┌KEYWORD: 'function'
+                  │           ├IDENTIFIER: 'main'
+                  │           ├LPAREN
+                  │           ├Parameters
+                  │           ├RPAREN
+                  ├FuncDefNode┤
+                  │           │                 ┌LCURLY
+                  │           └StatementListNode┤
+                  │                             │            ┌IDENTIFIER: 'dosomethingsilly'
+                  │                             │            ├LPAREN
+                  │                             ├FuncCallNode┤
+                  │                             │            ├Arguments
+                  │                             │            └RPAREN
+                  │                             └RCURLY
+                  │            ┌IDENTIFIER: 'main'
+                  │            ├LPAREN
+                  └FuncCallNode┤
+                               ├Arguments
+                               └RPAREN
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ABSTRACT SYNTAX TREE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+                                     ┌IDENTIFIER: 'number'
+                  ┌VarDeclarationNode┤
+                  │                  └ValueNode┐
+                  │                            └INT: 10
+ StatementListNode┤
+                  │           ┌IDENTIFIER: 'dosomethingsilly'
+                  │           ├Parameters
+                  ├FuncDefNode┤
+                  │           │                               ┌IDENTIFIER: 'number'
+                  │           │                 ┌VarAssignNode┤
+                  │           │                 │             │         ┌VarAccessNode┐
+                  │           │                 │             │         │             └IDENTIFIER: 'number'
+                  │           │                 │             └BinOpNode┤
+                  │           │                 │                       ├PLUS
+                  │           │                 │                       └ValueNode┐
+                  │           │                 │                                 └INT: 1
+                  │           └StatementListNode┤
+                  │                             │             ┌IDENTIFIER: 'numbr'
+                  │                             └VarAssignNode┤
+                  │                                           │         ┌VarAccessNode┐
+                  │                                           │         │             └IDENTIFIER: 'number'
+                  │                                           └BinOpNode┤
+                  │                                                     ├MUL
+                  │                                                     └ValueNode┐
+                  │                                                               └INT: 2
+                  │           ┌IDENTIFIER: 'main'
+                  │           ├Parameters
+                  ├FuncDefNode┤
+                  │           └StatementListNode┐
+                  │                             │            ┌IDENTIFIER: 'dosomethingsilly'
+                  │                             └FuncCallNode┤
+                  │                                          └Arguments
+                  │            ┌IDENTIFIER: 'main'
+                  └FuncCallNode┤
+                               └Arguments
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ EXECUTION PROCESS @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Visit StatementListNode: [IDENTIFIER: 'number' = (INT: 10), FUNCTION <IDENTIFIER: 'dosomethingsilly'> ([]) -> [IDENTIFIER: 'number' = ((IDENTIFIER: 'number', PLUS, INT: 1)), IDENTIFIER: 'numbr' = ((IDENTIFIER: 'number', MUL, INT: 2))], FUNCTION <IDENTIFIER: 'main'> ([]) -> [CALL: IDENTIFIER: 'dosomethingsilly' ([])], CALL: IDENTIFIER: 'main' ([])]
+Visit VarDeclarationNode: IDENTIFIER: 'number' = (INT: 10)
+Visit ValueNode: INT: 10
+Passing Result: 10
+Passing Result: 10
+Visit FuncDefNode: FUNCTION <IDENTIFIER: 'dosomethingsilly'> ([]) -> [IDENTIFIER: 'number' = ((IDENTIFIER: 'number', PLUS, INT: 1)), IDENTIFIER: 'numbr' = ((IDENTIFIER: 'number', MUL, INT: 2))]
+Passing Result: <function dosomethingsilly>
+Visit FuncDefNode: FUNCTION <IDENTIFIER: 'main'> ([]) -> [CALL: IDENTIFIER: 'dosomethingsilly' ([])]
+Passing Result: <function main>
+Visit FuncCallNode: CALL: IDENTIFIER: 'main' ([])
+Visit VarAccessNode: IDENTIFIER: 'main'
+Passing Result: <function main>
+Executing Function: <function main>
+	Visit StatementListNode: [CALL: IDENTIFIER: 'dosomethingsilly' ([])]
+	Visit FuncCallNode: CALL: IDENTIFIER: 'dosomethingsilly' ([])
+	Visit VarAccessNode: IDENTIFIER: 'dosomethingsilly'
+	Passing Result: <function dosomethingsilly>
+	Executing Function: <function dosomethingsilly>
+		Visit StatementListNode: [IDENTIFIER: 'number' = ((IDENTIFIER: 'number', PLUS, INT: 1)), IDENTIFIER: 'numbr' = ((IDENTIFIER: 'number', MUL, INT: 2))]
+		Visit VarAssignNode: IDENTIFIER: 'number' = ((IDENTIFIER: 'number', PLUS, INT: 1))
+		Visit BinOpNode: (IDENTIFIER: 'number', PLUS, INT: 1)
+		Visit VarAccessNode: IDENTIFIER: 'number'
+		Passing Result: 10
+		Visit ValueNode: INT: 1
+		Passing Result: 1
+		Executing Operation: 10 PLUS 1
+		Passing Result: 11
+		Passing Result: 11
+		Visit VarAssignNode: IDENTIFIER: 'numbr' = ((IDENTIFIER: 'number', MUL, INT: 2))
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ SYMBOL TABLES @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Symbol Table for Context[name = <program>, depth = 0]:
+	NULL : 0
+	TRUE : 1
+	FALSE : 0
+	PI : 3.141592653589793
+	log : <function log>
+	abs : <function abs>
+	sin : <function sin>
+	cos : <function cos>
+	sqrt : <function sqrt>
+	number : 11
+	dosomethingsilly : <function dosomethingsilly>
+	main : <function main>
+
+Symbol Table for Context[name = main, depth = 1]:
+
+Symbol Table for Context[name = dosomethingsilly, depth = 2]:

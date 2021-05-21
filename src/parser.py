@@ -363,8 +363,6 @@ class Parser:
             stmts.append(res.register(self.stmt()))
             if res.error: 
                 return res
-            else:
-                continue
             if self.current_token.type == TT_EOL:
                 self.advance()
                 continue
